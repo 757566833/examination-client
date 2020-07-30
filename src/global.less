@@ -1,0 +1,60 @@
+:root {
+  --animate-duration: 280ms;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.animate__fadeInRightSmall {
+  // animation: fadeInRightSmall var(--animate-duration) linear 1;
+  animation-name: fadeInRightSmall;
+  animation-duration: var(--animate-duration);
+  animation-iteration-count: var(--animate-repeat);
+  animation-fill-mode: both;
+  // position: relative;
+}
+
+@keyframes fadeInRightSmall {
+  0% {
+    opacity: 0;
+    transform: translate3d(60px, 0, 0) // left: 60px;
+  }
+
+  to {
+    opacity: 1;
+    transform: translateZ(0);
+    // left: 0;
+  }
+}
+
+
+.animate__fadeInUpSmall {
+  // animation: fadeInRightSmall var(--animate-duration) linear 1;
+  animation-name: fadeInUpSmall;
+  animation-duration: var(--animate-duration);
+  animation-iteration-count: var(--animate-repeat);
+  animation-fill-mode: both;
+  // position: relative;
+}
+
+@keyframes fadeInUpSmall {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 60px, 0) // left: 60px;
+  }
+
+  to {
+    opacity: 1;
+    transform: translateZ(0);
+    // left: 0;
+  }
+}
