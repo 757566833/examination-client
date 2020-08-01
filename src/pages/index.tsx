@@ -6,18 +6,23 @@ import React, {
   useState,
   // useState,
 } from 'react';
-import { Carousel } from 'antd';
+import { Carousel, Button, Typography } from 'antd';
+import {
+  CloseOutlined,
+} from '@ant-design/icons';
 // import styled from 'styled-components';
 import {
   Flex,
-  animateCSSByQuery,
-  animateCSSByElement,
+  // animateCSSByQuery,
+  // animateCSSByElement,
 } from '@/css';
 import Logo from '@/asset/logo.svg';
 import ReactLogo from '@/asset/react.svg';
 import styles from './index.less';
-import { useScroll, useEffectOnce } from '@/hooks';
-
+import { useScroll,
+  // useEffectOnce
+} from '@/hooks';
+const { Title, Paragraph } = Typography;
 const name = ['一', '谷', '科', '技'];
 const test = [{
   title: '板块1',
@@ -91,8 +96,8 @@ const Index:React.FC = ()=>{
         </div>
       </div>
       <ClassificationList/>
-      <div className={`${styles.footer} animate__animated animate__fadeInRightSmall`}>
-        <div className={`${styles.text} flex`}>
+      <div className={`${styles.footer} animate__animated animate__fadeInRightSmall flex`}>
+        <div className={`${styles.text} `}>
           123
         </div>
       </div>
@@ -103,32 +108,37 @@ export default Index;
 const ClassificationList:React.FC = ()=>{
   const body: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
   const { x, y } = useScroll(body);
-  const preSelected = useRef<number>();
   useEffect(()=>{
     console.log('scroll', x, y);
   }, [x, y]);
   const [selected, setSelected] = useState<number>();
+  const [detail, setDetail] = useState<number>();
   const onCardClick = (e:React.SyntheticEvent<HTMLElement>)=>{
+    console.log('触发了onCardClick');
     const index = Number.parseInt(e.currentTarget.attributes.getNamedItem('data-index')?.value||'');
-    if (!isNaN(index)&&index!=preSelected.current) {
-      preSelected.current = index;
+    if (!isNaN(index)) {
       setSelected(index);
-      animateCSSByElement(e.currentTarget, 'zoomIn');
-      animateCSSByQuery(body.current, `.itemAnimateCover${index}`, 'zoomInImg');
-      const pos = rol(index);
-      if (pos==LR.left) {
-        animateCSSByQuery(body.current, `.detail${index}`, 'rightImg');
-      } else {
-        animateCSSByQuery(body.current, `.detail${index}`, 'leftImg');
-      }
+      setTimeout(() => {
+        setDetail(index);
+      }, 280);
+      // animateCSSByElement(e.currentTarget, 'zoomIn');
+      // animateCSSByQuery(body.current, `.itemAnimateCover${index}`, 'zoomInImg');
+      // const pos = rol(index);
+      // if (pos==LR.left) {
+      //   animateCSSByQuery(body.current, `.detail${index}`, 'rightImg');
+      // } else {
+      //   animateCSSByQuery(body.current, `.detail${index}`, 'leftImg');
+      // }
     }
   };
+  const cancel = (event: React.MouseEvent<HTMLElement, MouseEvent>)=>{
+    event.stopPropagation();
+    setDetail(()=>undefined);
+    setTimeout(() => {
+      setSelected(()=>undefined);
+    }, 280);
+  };
   // const listLength = test.length;
-  useEffectOnce(()=>{
-    for (const [index, _iterator] of test.entries()) {
-      animateCSSByQuery(body.current, `.itemAnimate${index}`, 'fadeInUpSmall');
-    }
-  });
   return <div className={`${styles.content} flex`} ref={body}>
     <div className={`${styles.carouselParent} animate__animated animate__fadeInRightSmall`}>
       <Carousel
@@ -143,9 +153,16 @@ const ClassificationList:React.FC = ()=>{
         </div>
       </Carousel>
     </div>
-
-    <div>最新内容</div>
-    <div>{`{消息标题}`}</div>
+    {/* <Typography>
+      <Title>最新内容</Title>
+      <Paragraph>
+      In the process of internal desktop applications development
+      </Paragraph>
+    </Typography> */}
+    <div className='animate__animated animate__fadeInUpSmall' style={{ textAlign: 'center', padding: '24px 0', animationDelay: '840ms' }}>
+      <h2>最新内容</h2>
+      <h3> In the process of internal desktop applications development</h3>
+    </div>
     <div className={styles.row}>
       {test.map((item, index)=>{
         let css:React.CSSProperties = {
@@ -184,32 +201,42 @@ const ClassificationList:React.FC = ()=>{
             break;
         }
         const pos = rol(index);
+        console.log('detailStyle', index==detail);
         const detailStyle:React.CSSProperties={
-          width: index==selected?600:'100%',
+          width: index==detail?600:'100%',
         };
         switch (pos) {
           case LR.left:
-            detailStyle.left=index==selected?550:0;
+            detailStyle.left=(index==detail?550:0);
             break;
           case LR.right:
-            detailStyle.right=index==selected?550:0;
+            detailStyle.right=(index==detail?550:0);
             break;
           default:
             break;
         }
         return <div
           key={item.title}
-          className={`itemAnimate${index} ${styles.col}`}
+          className={`animate__animated animate__fadeInUpSmall ${styles.col}`}
           style={css}
           onClick={onCardClick}
           data-index={index}
         >
           <div className={`flex ${styles.card}`} >
             <div
-              className={`${styles.detail} detail${index}`}
+              className={`${styles.detail} itemAnimateDetail${index}`}
               style={detailStyle}
             >
-              {item.detail}
+              <Typography>
+                <Title>{item.title}</Title>
+                <Paragraph>
+                  {item.detail}
+                </Paragraph>
+              </Typography>
+
+              <Button shape="circle" size='small' className={styles.close} onClick={cancel}>
+                <CloseOutlined />
+              </Button>
             </div>
             <div
               className={`${styles.cover} itemAnimateCover${index} flex`}
