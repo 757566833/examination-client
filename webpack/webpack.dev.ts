@@ -18,7 +18,7 @@ export const developmentConfig :webpack.Configuration= {
     publicPath: '/',
   },
   mode: 'development',
-  devtool: 'eval-source-map',
+  devtool: 'cheap-module-source-map',
   devServer: {
     // 注意这里换了一级目录
     historyApiFallback: { index: '/' },
@@ -38,7 +38,10 @@ export const developmentConfig :webpack.Configuration= {
     new webpack.HotModuleReplacementPlugin({
       // Options...
     }),
-    new AssetsPlugin({ filename: 'assets.json', path: path.join(__dirname, '..', 'dist', 'public') }),
+    new AssetsPlugin({
+      filename: 'assets.json',
+      path: path.join(__dirname, '..', 'dist', 'public'),
+    }),
     new webpack.NamedModulesPlugin(),
     new ForkTsCheckerWebpackPlugin(),
     new MiniCssExtractPlugin({
@@ -66,12 +69,22 @@ export const developmentHotConfig = {
           options: {
             cacheDirectory: true,
             babelrc: false,
-            presets: ['@babel/preset-env', '@babel/preset-typescript', '@babel/preset-react'],
+            presets: [
+              '@babel/preset-env',
+              '@babel/preset-typescript',
+              '@babel/preset-react',
+            ],
 
             plugins: [
               ['@babel/plugin-proposal-decorators', { legacy: true }],
               ['@babel/plugin-proposal-class-properties', { loose: true }],
               ['import', { 'libraryName': 'antd', 'style': true }, 'antd'],
+              [
+                'babel-plugin-styled-components',
+                {
+                  'ssr': false,
+                },
+              ],
               'react-hot-loader/babel',
             ],
           },

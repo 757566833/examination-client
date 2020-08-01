@@ -24,7 +24,10 @@ export const productionConfig: webpack.Configuration = {
   },
   plugins: [
     new BundleAnalyzerPlugin(),
-    new AssetsPlugin({ filename: 'assets.json', path: path.join(__dirname, '..', 'dist', 'public') }),
+    new AssetsPlugin({
+      filename: 'assets.json',
+      path: path.join(__dirname, '..', 'dist', 'public'),
+    }),
     new CleanWebpackPlugin({
       cleanOnceBeforeBuildPatterns: ['public/**/*'],
     }),

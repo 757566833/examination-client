@@ -4,6 +4,7 @@ env:
 extends:
   - 'plugin:react/recommended'
   - google
+  - "plugin:react-hooks/recommended"
 parser: '@typescript-eslint/parser'
 parserOptions:
   ecmaFeatures:
@@ -24,4 +25,4 @@ rules:
   no-undef: "off"
   object-curly-spacing: ["error", "always"]
   react/prop-types: 0
-  max-len: ["error", { "code": 120 }]
+  max-len: ["error", { "code": 240 }]

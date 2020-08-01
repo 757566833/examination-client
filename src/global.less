@@ -14,6 +14,10 @@ body,
   box-sizing: border-box;
 }
 
+.flex {
+  display: flex;
+}
+
 .animate__fadeInRightSmall {
   // animation: fadeInRightSmall var(--animate-duration) linear 1;
   animation-name: fadeInRightSmall;
@@ -56,5 +60,82 @@ body,
     opacity: 1;
     transform: translateZ(0);
     // left: 0;
+  }
+}
+
+.animate__zoomIn {
+  animation-name: zoomIn;
+  animation-duration: var(--animate-duration);
+  animation-iteration-count: var(--animate-repeat);
+  animation-fill-mode: both;
+}
+
+@keyframes zoomIn {
+  0% {
+    width: 300px;
+    height: 280px;
+  }
+
+  to {
+    width: 552px;
+    height: 588px;
+    // left: 0;
+  }
+}
+
+.animate__zoomInImg {
+  animation-name: zoomInImg;
+  animation-duration: var(--animate-duration);
+  animation-iteration-count: var(--animate-repeat);
+  animation-fill-mode: both;
+}
+
+@keyframes zoomInImg {
+  0% {
+    bottom: 100px;
+  }
+
+  to {
+    bottom: 0px;
+    // left: 0;
+  }
+}
+
+
+.animate__rightImg {
+  animation-name: rightImg;
+  animation-duration: var(--animate-duration);
+  animation-iteration-count: var(--animate-repeat);
+  animation-fill-mode: both;
+}
+
+@keyframes rightImg {
+  0% {
+    left: 0;
+    width: 100%;
+  }
+
+  to {
+    left: 550px;
+    width: 600;
+  }
+}
+
+.animate__leftImg {
+  animation-name: leftImg;
+  animation-duration: var(--animate-duration);
+  animation-iteration-count: var(--animate-repeat);
+  animation-fill-mode: both;
+}
+
+@keyframes leftImg {
+  0% {
+    right: 0;
+    width: 100%;
+  }
+
+  to {
+    right: 550px;
+    width: 600;
   }
 }

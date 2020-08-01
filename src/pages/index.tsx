@@ -1,105 +1,239 @@
-import React from 'react';
-import { Carousel, Card, Col } from 'antd';
-import styled from 'styled-components';
-import { Flex } from '@/css';
+// import React from 'react';
+import React, {
+  useRef,
+  RefObject,
+  useEffect,
+  useState,
+  // useState,
+} from 'react';
+import { Carousel } from 'antd';
+// import styled from 'styled-components';
+import {
+  Flex,
+  animateCSSByQuery,
+  animateCSSByElement,
+} from '@/css';
 import Logo from '@/asset/logo.svg';
+import ReactLogo from '@/asset/react.svg';
 import styles from './index.less';
-const Header = styled(Flex)`
-  justify-content: space-between;
-  background: #364768;
-  height:60px;
-  padding:12px;
-  border-radius: 6px 6px 0 0;
-`;
-const LogoDom = styled.img`
-  height:36px;
-  width:36px;
-`;
-const TextDom = styled(Flex)`
-  color:#ffffff;
-  line-height:36px;
-  margin:0 0 0 12px;
-`;
-const CarouselDom = styled.div`
-animation-delay: 280ms;
-width:100%;
-`;
-const Footer = styled(Flex)`
-  justify-content: center;
-  background: #364768;
-  height:60px;
-  padding:12px;
-  border-radius: 0 0 6px 6px;
-  animation-delay: 560ms;
-  width:100%;
-`;
-const ConText = styled.div`
-flex:1;
-overflow: auto;
-`;
-const RowDom = styled.div`
- padding:96px;
- width:1296px;
- margin:0 auto;
-`;
+import { useScroll, useEffectOnce } from '@/hooks';
+
 const name = ['一', '谷', '科', '技'];
-const test = ['板块1', '板块2', '板块3', '板块4', '板块5', '板块6', '板块7', '板块8', '板块9'];
+const test = [{
+  title: '板块1',
+  description: '板块1备注',
+  img: ReactLogo,
+  detail: '板块1的内容详情',
+}, {
+  title: '板块2',
+  description: '板块2备注',
+  img: ReactLogo,
+  detail: '板块2的内容详情',
+}, {
+  title: '板块3',
+  description: '板块3备注',
+  img: ReactLogo,
+  detail: '板块3的内容详情',
+}, {
+  title: '板块4',
+  description: '板块4备注',
+  img: ReactLogo,
+  detail: '板块4的内容详情',
+}, {
+  title: '板块5',
+  description: '板块5备注',
+  img: ReactLogo,
+  detail: '板块5的内容详情',
+}, {
+  title: '板块6',
+  description: '板块6备注',
+  img: ReactLogo,
+  detail: '板块6的内容详情',
+}, {
+  title: '板块7',
+  description: '板块7备注',
+  img: ReactLogo,
+  detail: '板块7的内容详情',
+}, {
+  title: '板块8',
+  description: '板块8备注',
+  img: ReactLogo,
+  detail: '板块8的内容详情',
+}, {
+  title: '板块9',
+  description: '板块9备注',
+  img: ReactLogo,
+  detail: '板块9的内容详情',
+}];
+enum LR{
+  left=1,
+  right=2
+}
+const rol = (index:number)=>{
+  if (index%4/2>=1) {
+    return LR.right;
+  } else {
+    return LR.left;
+  }
+};
 const Index:React.FC = ()=>{
   return (
     <>
-      <Header className='animate__animated animate__fadeInRightSmall'>
+      <div className={`${styles.header} flex animate__animated animate__fadeInRightSmall`}>
         <Flex>
-          <LogoDom src={Logo}/>
-          <TextDom>{name.map((item, index)=><div key={index}>{item}</div>)}</TextDom>
+          <img className={styles.logo} src={Logo}/>
+          <div className={`${styles.text} flex`}>
+            {name.map((item, index)=><div key={index}>{item}</div>)}
+          </div>
         </Flex>
         <div>
           user
         </div>
-      </Header>
-      <ConText>
-        <CarouselDom className='animate__animated animate__fadeInRightSmall'>
-          <Carousel
-            className={`${styles.carousel} `}
-            effect="fade"
-          >
-            <div>
-              <h3>广告位招租</h3>
-            </div>
-            <div>
-              <h3>广告位2招租</h3>
-            </div>
-          </Carousel>
-        </CarouselDom>
-
-        <div>最新内容</div>
-        <div>{`{消息标题}`}</div>
-        <RowDom>
-          {test.map((item, index)=>{
-            return <Col
-              span={6}
-              key={item}
-              className='animate__animated animate__fadeInUpSmall'
-              style={{
-                animationDelay: `${840+index*140}ms`,
-              }}
-            >
-              <Card
-                hoverable={true}
-                cover={<img alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
-              >
-                <Card.Meta title={item} description="www.instagram.com" />
-              </Card>
-            </Col>;
-          })}
-        </RowDom>
-
-      </ConText>
-      <Footer className='animate__animated animate__fadeInRightSmall'>
-        <TextDom>
+      </div>
+      <ClassificationList/>
+      <div className={`${styles.footer} animate__animated animate__fadeInRightSmall`}>
+        <div className={`${styles.text} flex`}>
           123
-        </TextDom>
-      </Footer>
+        </div>
+      </div>
     </>
   );
 };
 export default Index;
+const ClassificationList:React.FC = ()=>{
+  const body: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
+  const { x, y } = useScroll(body);
+  const preSelected = useRef<number>();
+  useEffect(()=>{
+    console.log('scroll', x, y);
+  }, [x, y]);
+  const [selected, setSelected] = useState<number>();
+  const onCardClick = (e:React.SyntheticEvent<HTMLElement>)=>{
+    const index = Number.parseInt(e.currentTarget.attributes.getNamedItem('data-index')?.value||'');
+    if (!isNaN(index)&&index!=preSelected.current) {
+      preSelected.current = index;
+      setSelected(index);
+      animateCSSByElement(e.currentTarget, 'zoomIn');
+      animateCSSByQuery(body.current, `.itemAnimateCover${index}`, 'zoomInImg');
+      const pos = rol(index);
+      if (pos==LR.left) {
+        animateCSSByQuery(body.current, `.detail${index}`, 'rightImg');
+      } else {
+        animateCSSByQuery(body.current, `.detail${index}`, 'leftImg');
+      }
+    }
+  };
+  // const listLength = test.length;
+  useEffectOnce(()=>{
+    for (const [index, _iterator] of test.entries()) {
+      animateCSSByQuery(body.current, `.itemAnimate${index}`, 'fadeInUpSmall');
+    }
+  });
+  return <div className={`${styles.content} flex`} ref={body}>
+    <div className={`${styles.carouselParent} animate__animated animate__fadeInRightSmall`}>
+      <Carousel
+        className={`${styles.carousel} `}
+        effect="fade"
+      >
+        <div>
+          <h3>广告位招租</h3>
+        </div>
+        <div>
+          <h3>广告位2招租</h3>
+        </div>
+      </Carousel>
+    </div>
+
+    <div>最新内容</div>
+    <div>{`{消息标题}`}</div>
+    <div className={styles.row}>
+      {test.map((item, index)=>{
+        let css:React.CSSProperties = {
+          width: index==selected?552:252,
+          height: index==selected?588:285,
+          animationDelay: index==selected?'0ms':`${840+index*140}ms`,
+          zIndex: index==selected?10000:100,
+          top: Math.floor(index/4)*300,
+        };
+        switch (index%4) {
+          case 0:
+            css = {
+              ...css,
+              left: 24,
+            };
+            break;
+          case 1:
+            css = {
+              ...css,
+              right: 624,
+            };
+            break;
+          case 2:
+            css = {
+              ...css,
+              left: 624,
+            };
+            break;
+          case 3:
+            css = {
+              ...css,
+              right: 24,
+            };
+            break;
+          default:
+            break;
+        }
+        const pos = rol(index);
+        const detailStyle:React.CSSProperties={
+          width: index==selected?600:'100%',
+        };
+        switch (pos) {
+          case LR.left:
+            detailStyle.left=index==selected?550:0;
+            break;
+          case LR.right:
+            detailStyle.right=index==selected?550:0;
+            break;
+          default:
+            break;
+        }
+        return <div
+          key={item.title}
+          className={`itemAnimate${index} ${styles.col}`}
+          style={css}
+          onClick={onCardClick}
+          data-index={index}
+        >
+          <div className={`flex ${styles.card}`} >
+            <div
+              className={`${styles.detail} detail${index}`}
+              style={detailStyle}
+            >
+              {item.detail}
+            </div>
+            <div
+              className={`${styles.cover} itemAnimateCover${index} flex`}
+              style={{
+                bottom: index==selected?0:100,
+              }}
+            >
+              <img
+                className={styles.img}
+                alt="example"
+                src={item.img}
+              />
+
+            </div>
+
+            <div className={styles.meta}>
+              <div className={styles.title}>{item.title}</div>
+              <div className={styles.description}>{item.description}</div>
+            </div>
+          </div>
+        </div>;
+      })}
+    </div>
+  </div>;
+};
+
+
