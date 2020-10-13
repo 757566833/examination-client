@@ -4,25 +4,21 @@ import React, {
   RefObject,
   useEffect,
   useState,
-  // useState,
 } from 'react';
-import { Carousel, Button, Typography } from 'antd';
+import {Carousel, Button, Typography} from 'antd';
 import {
   CloseOutlined,
 } from '@ant-design/icons';
-// import styled from 'styled-components';
-import {
-  Flex,
-  // animateCSSByQuery,
-  // animateCSSByElement,
-} from '@/css';
+
 import Logo from '@/asset/logo.svg';
 import ReactLogo from '@/asset/react.svg';
 import styles from './index.less';
-import { useScroll,
+import {
+  useScroll,
   // useEffectOnce
-} from '@/hooks';
-const { Title, Paragraph } = Typography;
+} from '@/hooks/common';
+
+const {Title, Paragraph} = Typography;
 const name = ['一', '谷', '科', '技'];
 const test = [{
   title: '板块1',
@@ -70,27 +66,29 @@ const test = [{
   img: ReactLogo,
   detail: '板块9的内容详情',
 }];
-enum LR{
-  left=1,
-  right=2
+
+enum LR {
+  left = 1,
+  right = 2
 }
-const rol = (index:number)=>{
-  if (index%4/2>=1) {
+
+const rol = (index: number) => {
+  if (index % 4 / 2 >= 1) {
     return LR.right;
   } else {
     return LR.left;
   }
 };
-const Index:React.FC = ()=>{
+const Index: React.FC = () => {
   return (
     <>
       <div className={`${styles.header} flex animate__animated animate__fadeInRightSmall`}>
-        <Flex>
+        <div className="flex">
           <img className={styles.logo} src={Logo}/>
           <div className={`${styles.text} flex`}>
-            {name.map((item, index)=><div key={index}>{item}</div>)}
+            {name.map((item, index) => <div key={index}>{item}</div>)}
           </div>
-        </Flex>
+        </div>
         <div>
           user
         </div>
@@ -105,17 +103,17 @@ const Index:React.FC = ()=>{
   );
 };
 export default Index;
-const ClassificationList:React.FC = ()=>{
+const ClassificationList: React.FC = () => {
   const body: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
-  const { x, y } = useScroll(body);
-  useEffect(()=>{
+  const {x, y} = useScroll(body);
+  useEffect(() => {
     console.log('scroll', x, y);
   }, [x, y]);
   const [selected, setSelected] = useState<number>();
   const [detail, setDetail] = useState<number>();
-  const onCardClick = (e:React.SyntheticEvent<HTMLElement>)=>{
+  const onCardClick = (e: React.SyntheticEvent<HTMLElement>) => {
     console.log('触发了onCardClick');
-    const index = Number.parseInt(e.currentTarget.attributes.getNamedItem('data-index')?.value||'');
+    const index = Number.parseInt(e.currentTarget.attributes.getNamedItem('data-index')?.value || '');
     if (!isNaN(index)) {
       setSelected(index);
       setTimeout(() => {
@@ -131,11 +129,11 @@ const ClassificationList:React.FC = ()=>{
       // }
     }
   };
-  const cancel = (event: React.MouseEvent<HTMLElement, MouseEvent>)=>{
+  const cancel = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     event.stopPropagation();
-    setDetail(()=>undefined);
+    setDetail(() => undefined);
     setTimeout(() => {
-      setSelected(()=>undefined);
+      setSelected(() => undefined);
     }, 280);
   };
   // const listLength = test.length;
@@ -159,20 +157,22 @@ const ClassificationList:React.FC = ()=>{
       In the process of internal desktop applications development
       </Paragraph>
     </Typography> */}
-    <div className='animate__animated animate__fadeInUpSmall' style={{ textAlign: 'center', padding: '24px 0', animationDelay: '840ms' }}>
+    <div
+      className='animate__animated animate__fadeInUpSmall'
+      style={{textAlign: 'center', padding: '24px 0', animationDelay: '840ms'}}>
       <h2>最新内容</h2>
       <h3> In the process of internal desktop applications development</h3>
     </div>
     <div className={styles.row}>
-      {test.map((item, index)=>{
-        let css:React.CSSProperties = {
-          width: index==selected?552:252,
-          height: index==selected?588:285,
-          animationDelay: index==selected?'0ms':`${840+index*140}ms`,
-          zIndex: index==selected?10000:100,
-          top: Math.floor(index/4)*300,
+      {test.map((item, index) => {
+        let css: React.CSSProperties = {
+          width: index == selected ? 552 : 252,
+          height: index == selected ? 588 : 285,
+          animationDelay: index == selected ? '0ms' : `${840 + index * 140}ms`,
+          zIndex: index == selected ? 10000 : 100,
+          top: Math.floor(index / 4) * 300,
         };
-        switch (index%4) {
+        switch (index % 4) {
           case 0:
             css = {
               ...css,
@@ -201,16 +201,16 @@ const ClassificationList:React.FC = ()=>{
             break;
         }
         const pos = rol(index);
-        console.log('detailStyle', index==detail);
-        const detailStyle:React.CSSProperties={
-          width: index==detail?600:'100%',
+        console.log('detailStyle', index == detail);
+        const detailStyle: React.CSSProperties = {
+          width: index == detail ? 600 : '100%',
         };
         switch (pos) {
           case LR.left:
-            detailStyle.left=(index==detail?550:0);
+            detailStyle.left = (index == detail ? 550 : 0);
             break;
           case LR.right:
-            detailStyle.right=(index==detail?550:0);
+            detailStyle.right = (index == detail ? 550 : 0);
             break;
           default:
             break;
@@ -222,7 +222,7 @@ const ClassificationList:React.FC = ()=>{
           onClick={onCardClick}
           data-index={index}
         >
-          <div className={`flex ${styles.card}`} >
+          <div className={`flex ${styles.card}`}>
             <div
               className={`${styles.detail} itemAnimateDetail${index}`}
               style={detailStyle}
@@ -235,13 +235,13 @@ const ClassificationList:React.FC = ()=>{
               </Typography>
 
               <Button shape="circle" size='small' className={styles.close} onClick={cancel}>
-                <CloseOutlined />
+                <CloseOutlined/>
               </Button>
             </div>
             <div
               className={`${styles.cover} itemAnimateCover${index} flex`}
               style={{
-                bottom: index==selected?0:100,
+                bottom: index == selected ? 0 : 100,
               }}
             >
               <img

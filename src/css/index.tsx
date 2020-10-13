@@ -1,10 +1,5 @@
-import styled from 'styled-components';
-export const Flex = styled.div`
-  display:flex;
-`;
 
-
-export const animateCSSByQuery = (element :Element|null, classname: string, animation: string, prefix = 'animate__') =>{
+export const animateCSSByQuery = (element: Element | null, classname: string, animation: string, prefix = 'animate__') => {
   return new Promise((resolve, _reject) => {
     const animationName = `${prefix}${animation}`;
     console.log(element, classname);
@@ -13,7 +8,7 @@ export const animateCSSByQuery = (element :Element|null, classname: string, anim
     node?.classList.add(`${prefix}animated`, animationName);
 
     // When the animation ends, we clean the classes and resolve the Promise
-    const handleAnimationEnd = ()=> {
+    const handleAnimationEnd = () => {
       node?.classList.remove(`${prefix}animated`, animationName);
       node?.removeEventListener('animationend', handleAnimationEnd);
 
@@ -23,14 +18,14 @@ export const animateCSSByQuery = (element :Element|null, classname: string, anim
     node?.addEventListener('animationend', handleAnimationEnd);
   });
 };
-export const animateCSSByElement = (element :Element, animation: string, prefix = 'animate__') =>{
+export const animateCSSByElement = (element: Element, animation: string, prefix = 'animate__') => {
   return new Promise((resolve, _reject) => {
     const animationName = `${prefix}${animation}`;
     console.log(animationName);
     element.classList.add(`${prefix}animated`, animationName);
     console.log(element.classList);
     // When the animation ends, we clean the classes and resolve the Promise
-    const handleAnimationEnd = ()=> {
+    const handleAnimationEnd = () => {
       element.classList.remove(`${prefix}animated`, animationName);
       element.removeEventListener('animationend', handleAnimationEnd);
 

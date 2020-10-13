@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 
 
+import Context from "@/context";
 import Layout from "@/layouts";
 import '@/global'
 import '@/global.less'
@@ -15,16 +16,18 @@ import Component0 from "@/pages/index";
 
 const AppRouter: React.FC = () => {
     return (
-        <Layout>
-            <Router>
-                <Switch>
+        <Context>
+            <Layout>
+                <Router>
+                    <Switch>
 
 
-                    <Route path="/" exact={true} component={Component0} />
+                      <Route path="/" exact={true} component={Component0} />
 
-                </Switch>
-            </Router>
-        </Layout>
+                    </Switch>
+                </Router>
+            </Layout>
+        </Context>
     );
 }
 export default AppRouter;

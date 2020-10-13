@@ -35,6 +35,7 @@ import 'react-hot-loader';
 `;
 }
 str += `
+import Context from "@/context";
 import Layout from "@/layouts";
 import '@/global'
 import '@/global.less'
@@ -49,9 +50,10 @@ import Component${index} from "${importPageUrl}";
 str += `
 const AppRouter: React.FC = () => {
     return (
-        <Layout>
-            <Router>
-                <Switch>
+        <Context>
+            <Layout>
+                <Router>
+                    <Switch>
 
 `;
 
@@ -64,13 +66,14 @@ for (const [index, iterator] of filesList.entries()) {
     importPage = '/';
   }
   str += `
-                    <Route path="${importPage}" exact={true} component={Component${index}} />
+                      <Route path="${importPage}" exact={true} component={Component${index}} />
 `;
 }
 str += `
-                </Switch>
-            </Router>
-        </Layout>
+                    </Switch>
+                </Router>
+            </Layout>
+        </Context>
     );
 }
 export default AppRouter;

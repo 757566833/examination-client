@@ -1,5 +1,6 @@
 import React,
-{ RefObject,
+{
+  RefObject,
   useEffect,
   useRef,
   useState,
@@ -45,27 +46,27 @@ export const useScroll = (ref: RefObject<HTMLElement>): State => {
 
 
 export const useAnimationState:
-<S>(initialState:S)=>[S, React.Dispatch<React.SetStateAction<S>>]=
- (initialState) => {
-   const frame = useRef(0);
-   const [state, setState] = useState(initialState);
-   // 这里为什么拿不到范型s?只能用 typeof
-   const setRafState:
-   (value: React.SetStateAction<typeof initialState>) => void =
-   useCallback((value) => {
-     cancelAnimationFrame(frame.current);
+  <S>(initialState: S) => [S, React.Dispatch<React.SetStateAction<S>>] =
+  (initialState) => {
+    const frame = useRef(0);
+    const [state, setState] = useState(initialState);
+    // 这里为什么拿不到范型s?只能用 typeof
+    const setRafState:
+      (value: React.SetStateAction<typeof initialState>) => void =
+      useCallback((value) => {
+        cancelAnimationFrame(frame.current);
 
-     frame.current = requestAnimationFrame(() => {
-       setState(value);
-     });
-   }, []);
+        frame.current = requestAnimationFrame(() => {
+          setState(value);
+        });
+      }, []);
 
-   useUnmount(() => {
-     cancelAnimationFrame(frame.current);
-   });
+    useUnmount(() => {
+      cancelAnimationFrame(frame.current);
+    });
 
-   return [state, setRafState];
- };
+    return [state, setRafState];
+  };
 
 const useUnmount = (fn: () => any): void => {
   const fnRef = useRef(fn);
@@ -78,3 +79,5 @@ export const useEffectOnce = (effect: EffectCallback) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(effect, []);
 };
+
+
