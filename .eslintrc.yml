@@ -5,6 +5,7 @@ extends:
   - 'plugin:react/recommended'
   - google
   - "plugin:react-hooks/recommended"
+  - "plugin:@typescript-eslint/recommended"
 parser: '@typescript-eslint/parser'
 parserOptions:
   ecmaFeatures:
@@ -16,13 +17,15 @@ plugins:
   - '@typescript-eslint'
   - "react-hooks"
 rules:
-  no-unused-vars: "off"
+  "@typescript-eslint/no-unused-vars": ["error"]
+  "@typescript-eslint/no-unused-vars-experimental": ["error"]
+  "no-unused-vars": "off"
   no-prototype-builtins: "off"
   react-hooks/rules-of-hooks: "error"
   react-hooks/exhaustive-deps: "error"
   react/jsx-uses-react: "error"
   react/jsx-uses-vars: "error"
   no-undef: "off"
-#  object-curly-spacing: ["error", "always"]
+  #  object-curly-spacing: ["error", "always"]
   react/prop-types: 0
-  max-len: ["error", { "code": 240 }]
+  max-len: [ "error", { "code": 240 } ]

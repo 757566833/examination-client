@@ -4,8 +4,9 @@ import AssetsPlugin from 'assets-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+
 const ErrorOverlayPlugin = require('error-overlay-webpack-plugin');
-export const developmentConfig :webpack.Configuration= {
+export const developmentConfig: webpack.Configuration = {
   entry: {
     main: './src/index.tsx',
     // reducer:'./src/redux/reducer',
@@ -21,7 +22,7 @@ export const developmentConfig :webpack.Configuration= {
   devtool: 'cheap-module-source-map',
   devServer: {
     // 注意这里换了一级目录
-    historyApiFallback: { index: '/' },
+    historyApiFallback: {index: '/'},
     contentBase: '../dist',
     host: '127.0.0.1',
     hot: true,
@@ -76,9 +77,9 @@ export const developmentHotConfig = {
             ],
 
             plugins: [
-              ['@babel/plugin-proposal-decorators', { legacy: true }],
-              ['@babel/plugin-proposal-class-properties', { loose: true }],
-              ['import', { 'libraryName': 'antd', 'style': true }, 'antd'],
+              ['@babel/plugin-proposal-decorators', {legacy: true}],
+              ['@babel/plugin-proposal-class-properties', {loose: true}],
+              ['import', {'libraryName': 'antd', 'style': true}, 'antd'],
               [
                 'babel-plugin-styled-components',
                 {

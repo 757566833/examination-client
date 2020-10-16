@@ -5,7 +5,9 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import {Carousel, Button, Typography} from 'antd';
+import {
+  Carousel, Button, Typography,
+} from 'antd';
 import {
   CloseOutlined,
 } from '@ant-design/icons';
@@ -17,6 +19,7 @@ import {
   useScroll,
   // useEffectOnce
 } from '@/hooks/common';
+import UserCenter from '@/pages/components/UserCenter';
 
 const {Title, Paragraph} = Typography;
 const name = ['一', '谷', '科', '技'];
@@ -90,7 +93,7 @@ const Index: React.FC = () => {
           </div>
         </div>
         <div>
-          user
+          <UserCenter/>
         </div>
       </div>
       <ClassificationList/>

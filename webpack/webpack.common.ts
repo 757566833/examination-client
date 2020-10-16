@@ -4,6 +4,7 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 // import tsImportPluginFactory from "ts-import-plugin";
 
 import webpack from 'webpack';
+
 const commonConfig: webpack.Configuration = {
   module: {
     rules: [
@@ -20,9 +21,9 @@ const commonConfig: webpack.Configuration = {
                 '@babel/preset-react',
               ],
               plugins: [
-                ['@babel/plugin-proposal-decorators', { legacy: true }],
-                ['@babel/plugin-proposal-class-properties', { loose: true }],
-                ['import', { 'libraryName': 'antd', 'style': true }, 'antd'],
+                ['@babel/plugin-proposal-decorators', {legacy: true}],
+                ['@babel/plugin-proposal-class-properties', {loose: true}],
+                ['import', {'libraryName': 'antd', 'style': true}, 'antd'],
                 [
                   'babel-plugin-styled-components',
                   {
@@ -36,54 +37,56 @@ const commonConfig: webpack.Configuration = {
       },
       {
         test: /\.css$/,
-        use: [{
-          loader: MiniCssExtractPlugin.loader,
-        },
-        {
-          loader: 'css-loader',
-          options: {
-            modules: {
-              localIdentName: '[path][name]__[local]--[hash:base64:5]',
-              auto: (resourcePath:string) =>
-                !resourcePath.includes('node_modules')&&
-              !resourcePath.includes('global.less'),
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              modules: {
+                localIdentName: '[path][name]__[local]--[hash:base64:5]',
+                auto: (resourcePath: string) =>
+                  !resourcePath.includes('node_modules') &&
+                  !resourcePath.includes('global.less'),
+              },
             },
           },
-        },
 
         ],
         exclude: /node_modules/,
       },
       {
         test: /\.less$/,
-        use: [{
-          loader: MiniCssExtractPlugin.loader,
-        },
-        {
-          loader: 'css-loader',
-          options: {
-            modules: {
-              localIdentName: '[path][name]__[local]--[hash:base64:5]',
-              auto: (resourcePath:string) =>
-                !resourcePath.includes('node_modules')&&
-              !resourcePath.includes('global.less'),
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              modules: {
+                localIdentName: '[path][name]__[local]--[hash:base64:5]',
+                auto: (resourcePath: string) =>
+                  !resourcePath.includes('node_modules') &&
+                  !resourcePath.includes('global.less'),
+              },
             },
           },
-        },
-        {
-          loader: 'less-loader',
-          options: {
-            sourceMap: true,
-            lessOptions: {
-              javascriptEnabled: true,
-              // modifyVars: {
-              //   'primary-color': '#ff4757',
-              //   'link-color': '#ff4757',
-              //   'border-radius-base': '2px',
-              // }
+          {
+            loader: 'less-loader',
+            options: {
+              sourceMap: true,
+              lessOptions: {
+                javascriptEnabled: true,
+                // modifyVars: {
+                //   'primary-color': '#ff4757',
+                //   'link-color': '#ff4757',
+                //   'border-radius-base': '2px',
+                // }
+              },
             },
           },
-        },
         ],
       },
       {
@@ -95,9 +98,9 @@ const commonConfig: webpack.Configuration = {
           options: {
             modules: {
               localIdentName: '[path][name]__[local]--[hash:base64:5]',
-              auto: (resourcePath:string) =>
-                !resourcePath.includes('node_modules')&&
-              !resourcePath.includes('global.less'),
+              auto: (resourcePath: string) =>
+                !resourcePath.includes('node_modules') &&
+                !resourcePath.includes('global.less'),
             },
           },
         }, {
