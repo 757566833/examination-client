@@ -1,10 +1,10 @@
-import React from 'react';
-import {Form, Input, Checkbox, Button} from 'antd';
+import React, {useState} from 'react';
+import {Form, Input, Button} from 'antd';
 import {Store} from 'rc-field-form/lib/interface';
 import {UserOutlined, LockOutlined, MessageOutlined} from '@ant-design/icons';
 import styles from './index.less';
 import {sendEmail} from '@/service/mail';
-import {useCountdown} from '@/hooks/common/time';
+import {CountDown} from '@/components/custom/CountDown';
 
 const span0 = {
   span: 0,
@@ -14,7 +14,7 @@ const span24 = {
 };
 
 const Register: React.FC = () => {
-  const [time, start] = useCountdown(5);
+  const [isCountDown, setIsCountDown] = useState(false);
   const [form] = Form.useForm();
   const onFinish = (values: Store) => {
     console.log('Success:', values);
@@ -23,10 +23,12 @@ const Register: React.FC = () => {
   const getCode = async () => {
     const res = await sendEmail(form.getFieldValue('email'));
     if (res) {
-      start();
+      setIsCountDown(true);
     }
   };
-
+  const countDownFinish = ()=>{
+    setIsCountDown(false);
+  };
   return (
     <Form
       labelCol={span0}
@@ -56,11 +58,11 @@ const Register: React.FC = () => {
           placeholder="密码"
         />
       </Form.Item>
-      <Form.Item style={{marginBottom: 0}}>
+      <Form.Item className={styles.form_item_inline}>
         <Form.Item
           name="year"
           rules={[{required: true}]}
-          style={{display: 'inline-block', width: 'calc(50% - 8px)'}}
+          className={styles.form_item_inline_block}
         >
           <Input
             prefix={<MessageOutlined className={styles.icon_color}/>}
@@ -68,9 +70,9 @@ const Register: React.FC = () => {
           />
         </Form.Item>
         <Form.Item
-          style={{display: 'inline-block', width: 'calc(50% - 8px)', margin: '0 8px'}}
+          className={styles.form_item_inline_block}
         >
-          <Button className="max_width" onClick={getCode}>{time ? `重新发送验证码 ${time}` : '发送验证码'}</Button>
+          <Button className="max_width" onClick={getCode}>{isCountDown ? <>重新发送验证码 <CountDown onFinish={countDownFinish}/></> : '发送验证码'}</Button>
         </Form.Item>
       </Form.Item>
       <Form.Item
@@ -81,8 +83,8 @@ const Register: React.FC = () => {
           注册
         </Button>
       </Form.Item>
-      <Button onClick={start}>test</Button>
     </Form>
   );
 };
 export default Register;
+

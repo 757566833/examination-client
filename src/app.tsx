@@ -7,8 +7,6 @@ import {
 } from "react-router-dom";
 
 
-import 'react-hot-loader';
-
 import Context from "@/context";
 import Layout from "@/layouts";
 import '@/global'
