@@ -3,6 +3,8 @@ import {Form, Input, Checkbox, Button} from 'antd';
 import {Store} from 'rc-field-form/lib/interface';
 import {UserOutlined, LockOutlined, MessageOutlined} from '@ant-design/icons';
 import styles from './index.less';
+import {sendEmail} from '@/service/mail';
+import {useCountdown} from '@/hooks/common/time';
 
 const span0 = {
   span: 0,
@@ -12,19 +14,30 @@ const span24 = {
 };
 
 const Register: React.FC = () => {
+  const [time, start] = useCountdown(5);
+  const [form] = Form.useForm();
   const onFinish = (values: Store) => {
     console.log('Success:', values);
+    // values.
   };
+  const getCode = async () => {
+    const res = await sendEmail(form.getFieldValue('email'));
+    if (res) {
+      start();
+    }
+  };
+
   return (
     <Form
       labelCol={span0}
       wrapperCol={span24}
-      name="basic"
+      name="register"
+      form={form}
       onFinish={onFinish}
     >
       <Form.Item
         // label="邮箱"
-        name="username"
+        name="email"
         rules={[{required: true, message: 'Please input your username!'}]}
       >
         <Input
@@ -47,7 +60,7 @@ const Register: React.FC = () => {
         <Form.Item
           name="year"
           rules={[{required: true}]}
-          style={{display: 'inline-block', width: 'calc(60% - 8px)'}}
+          style={{display: 'inline-block', width: 'calc(50% - 8px)'}}
         >
           <Input
             prefix={<MessageOutlined className={styles.icon_color}/>}
@@ -55,9 +68,9 @@ const Register: React.FC = () => {
           />
         </Form.Item>
         <Form.Item
-          style={{display: 'inline-block', width: 'calc(40% - 8px)', margin: '0 8px'}}
+          style={{display: 'inline-block', width: 'calc(50% - 8px)', margin: '0 8px'}}
         >
-          <Button className="max_width">发送验证码</Button>
+          <Button className="max_width" onClick={getCode}>{time ? `重新发送验证码 ${time}` : '发送验证码'}</Button>
         </Form.Item>
       </Form.Item>
       <Form.Item
@@ -68,6 +81,7 @@ const Register: React.FC = () => {
           注册
         </Button>
       </Form.Item>
+      <Button onClick={start}>test</Button>
     </Form>
   );
 };
