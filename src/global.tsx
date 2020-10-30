@@ -4,3 +4,4 @@ moment.locale('zh-cn');
 // // 引入编辑器样式
 // import 'braft-editor/dist/index.css';
 
+import '@/asset/markdown/iconfont';

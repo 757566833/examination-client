@@ -4,7 +4,7 @@ import {Store} from 'rc-field-form/lib/interface';
 import {UserOutlined, LockOutlined, MessageOutlined} from '@ant-design/icons';
 import styles from './index.less';
 import {sendEmail} from '@/service/mail';
-import {CountDown} from '@/components/custom/CountDown';
+import {CountDown} from '@/components/custom/countDown/CountDown';
 import {register} from '@/service/auth';
 import {useLocalStorage} from '@/hooks/context';
 import {IResponse} from '@/http';

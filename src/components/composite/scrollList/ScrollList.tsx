@@ -2,7 +2,7 @@ import React, {ReactElement, useState} from 'react';
 import {List} from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
 import {LikeOutlined, MessageOutlined, StarOutlined} from '@ant-design/icons';
-import IconText from '../extended/IconText';
+import IconText from '../../extended/IconText';
 import {IResponse} from '@/http';
 import {IList} from '@/service/interface';
 import {useEffectOnce} from '@/hooks/common';

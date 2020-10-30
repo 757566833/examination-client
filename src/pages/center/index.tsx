@@ -1,5 +1,5 @@
 import React from 'react';
-import ScrollList from '@/components/composite/ScrollList';
+import ScrollList from '@/components/composite/scrollList/ScrollList';
 import styles from './index.less';
 import {Button} from 'antd';
 import {getList} from '@/service/elastic';
