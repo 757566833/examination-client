@@ -45,8 +45,7 @@ export const useScroll = (ref: RefObject<HTMLElement>): State => {
 };
 
 
-export const useAnimationState:
-  <S>(initialState: S) => [S, React.Dispatch<React.SetStateAction<S>>] =
+export const useAnimationState: <S>(initialState: S) => [S, React.Dispatch<React.SetStateAction<S>>] =
   (initialState) => {
     const frame = useRef(0);
     const [state, setState] = useState(initialState);
@@ -68,7 +67,7 @@ export const useAnimationState:
     return [state, setRafState];
   };
 
-const useUnmount = (fn: () => any): void => {
+export const useUnmount = (fn: () => any): void => {
   const fnRef = useRef(fn);
   fnRef.current = fn;
 

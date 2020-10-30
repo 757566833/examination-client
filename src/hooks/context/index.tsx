@@ -1,15 +1,18 @@
-import {useContext, useReducer} from 'react';
-import LocalStorageContext from '@/context/components/localStorage';
+import {useContext} from 'react';
+import {LocalStorageContext} from '@/context/components/LocalStorageProvider';
+import {MouseListenerContext} from '@/context/components/MouseListenerProvider';
 
-const localStorageReducer = (state: { [key: string]: string }, action: { [key: string]: string }) => {
-  return {...state, [action.key]: action.value};
-};
-export const useLocalStorage = (key: string) => {
+export const useLocalStorage: (key: string) => [any, (key: string) => void] = (key) => {
   const localStorageValue = useContext(LocalStorageContext);
-  const [state, update] = useReducer(localStorageReducer, localStorageValue);
   const setLocalStorage = (_value: string) => {
-    update({[key]: _value});
+    localStorageValue.dispatch({[key]: _value});
     localStorage.setItem(key, _value);
   };
-  return [state, setLocalStorage];
+  return [localStorageValue.state[key], setLocalStorage];
+};
+
+export const useMouseContent = () => {
+  const mouseListenerValue = useContext(MouseListenerContext);
+
+  return mouseListenerValue;
 };

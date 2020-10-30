@@ -29,7 +29,7 @@ function getErrorMessage(statusCode: number): string | undefined {
 }
 
 const getRequestInit: (
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH',
   headers?: { [key: string]: string | number },
   body?: any) => RequestInit =
   (method, headers, body) => {
@@ -50,11 +50,18 @@ const getRequestInit: (
     };
   };
 
+export interface IResponse<T> {
+  code: number,
+  data: T,
+  message: string
+}
+
 export interface IHttp {
-  get: <R>(url: string, parameter: { [key: string]: number | string }, headers?: { [key: string]: string | number }) => Promise<{ headers: Headers, text: R } | undefined>,
-  post: <R>(url: string, parameter: { [key: string]: number | string }, headers?: { [key: string]: string | number }) => Promise<{ headers: Headers, text: R } | undefined>,
-  put: <R>(url: string, parameter: { [key: string]: number | string }, headers?: { [key: string]: string | number }) => Promise<{ headers: Headers, text: R } | undefined>,
-  delete: <R>(url: string, parameter: { [key: string]: number | string }, headers?: { [key: string]: string | number }) => Promise<{ headers: Headers, text: R } | undefined>,
+  get: <R>(url: string, parameter?: { [key: string]: number | string }, headers?: { [key: string]: string | number }) => Promise<{ headers: Headers, text: R } | undefined>,
+  post: <R>(url: string, parameter: { [key: string]: any }, headers?: { [key: string]: string | number }) => Promise<{ headers: Headers, text: R } | undefined>,
+  put: <R>(url: string, parameter: { [key: string]: any }, headers?: { [key: string]: string | number }) => Promise<{ headers: Headers, text: R } | undefined>,
+  patch: <R>(url: string, parameter: { [key: string]: any }, headers?: { [key: string]: string | number }) => Promise<{ headers: Headers, text: R } | undefined>,
+  delete: <R>(url: string, parameter?: { [key: string]: any }, headers?: { [key: string]: string | number }) => Promise<{ headers: Headers, text: R } | undefined>,
 }
 
 export type IHttpFetch = <R>(requestUrl: string, requestInit: RequestInit) => Promise<{ headers: Headers, text: R } | undefined>
@@ -72,7 +79,11 @@ export const logoutWarning = () => {
   });
 };
 const httpFetch: IHttpFetch = async <R>(requestUrl: string, requestInit: RequestInit) => {
-  const response: Response = await fetch(requestUrl, requestInit);
+  let url = requestUrl;
+  if (!requestUrl.includes('http')) {
+    url = apiUrl + requestUrl;
+  }
+  const response: Response = await fetch(url, requestInit);
   if (response.status >= 200 && response.status < 300) {
     const headers: Headers = response.headers;
     const responseStr = await response.text();
@@ -96,7 +107,7 @@ const httpFetch: IHttpFetch = async <R>(requestUrl: string, requestInit: Request
   }
 };
 export const Http: IHttp = {
-  get: async <R>(url: string, parameter: { [key: string]: number | string }, headers?: { [key: string]: string | number }) => {
+  get: async <R>(url: string, parameter?: { [key: string]: number | string }, headers?: { [key: string]: string | number }) => {
     let parameterStr = '?';
     if (parameter) {
       for (const key in parameter) {
@@ -121,7 +132,12 @@ export const Http: IHttp = {
     const result: { headers: Headers, text: R } | undefined = await httpFetch<R>(url, requestInit);
     return result;
   },
-  delete: async <R>(url: string, parameter: { [key: string]: number | string }, headers?: { [key: string]: string | number }) => {
+  patch: async <R>(url: string, parameter: { [key: string]: number | string }, headers?: { [key: string]: string | number }) => {
+    const requestInit: RequestInit = getRequestInit('PATCH', headers, parameter);
+    const result: { headers: Headers, text: R } | undefined = await httpFetch<R>(url, requestInit);
+    return result;
+  },
+  delete: async <R>(url: string, parameter?: { [key: string]: number | string }, headers?: { [key: string]: string | number }) => {
     const requestInit: RequestInit = getRequestInit('DELETE', headers, parameter);
     const result: { headers: Headers, text: R } | undefined = await httpFetch<R>(url, requestInit);
     return result;

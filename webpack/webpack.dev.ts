@@ -5,6 +5,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const ErrorOverlayPlugin = require('error-overlay-webpack-plugin');
 export const developmentConfig: webpack.Configuration = {
   entry: {
@@ -51,6 +52,9 @@ export const developmentConfig: webpack.Configuration = {
     new HtmlWebpackPlugin({
       title: 'test',
       template: path.resolve(__dirname, 'template.dev.html'),
+    }),
+    new webpack.DefinePlugin({
+      apiUrl: JSON.stringify('//127.0.0.1:9000'),
     }),
   ],
   resolve: {

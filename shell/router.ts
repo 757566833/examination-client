@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { readFileList } from './util';
+import {readFileList} from './util';
 try {
   fs.mkdirSync(path.resolve(__dirname, '..', 'src'));
 } catch (error) {
@@ -51,8 +51,8 @@ str += `
 const AppRouter: React.FC = () => {
     return (
         <Context>
-            <Layout>
-                <Router>
+            <Router>
+                <Layout>
                     <Switch>
 
 `;
@@ -71,8 +71,8 @@ for (const [index, iterator] of filesList.entries()) {
 }
 str += `
                     </Switch>
-                </Router>
-            </Layout>
+                </Layout>
+            </Router>
         </Context>
     );
 }

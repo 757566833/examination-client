@@ -39,6 +39,9 @@ export const productionConfig: webpack.Configuration = {
       title: 'prod',
       template: path.resolve(__dirname, 'template.prod.html'),
     }),
+    new webpack.DefinePlugin({
+      apiUrl: JSON.stringify('//127.0.0.1:9000'),
+    }),
   ],
 };
 

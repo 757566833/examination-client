@@ -1,8 +1,7 @@
 import path from 'path';
 
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-// import tsImportPluginFactory from "ts-import-plugin";
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars-experimental
 import webpack from 'webpack';
 
 const commonConfig: webpack.Configuration = {
@@ -54,7 +53,7 @@ const commonConfig: webpack.Configuration = {
           },
 
         ],
-        exclude: /node_modules/,
+        // exclude: /node_modules/,
       },
       {
         test: /\.less$/,
@@ -126,6 +125,5 @@ const commonConfig: webpack.Configuration = {
       '@': path.resolve('src'),
     },
   },
-
 };
 export default commonConfig;
