@@ -2,13 +2,8 @@ import React, {useState} from 'react';
 import {ColorResult, PhotoshopPicker, RGBColor} from 'react-color';
 import Button from './Button';
 //
-const ColorInput: React.FC = () => {
-  const [color, setColor] = useState<RGBColor>({
-    r: 0,
-    g: 0,
-    b: 0,
-    a: 0,
-  });
+const ColorInput: React.FC<{ onClick: (name: string, value?: string) => void }> = (props) => {
+  const [color, setColor] = useState<string>('#000000');
   const [visible, setVisible] = useState(false);
   const handleClick = () => {
     setVisible(true);
@@ -21,10 +16,13 @@ const ColorInput: React.FC = () => {
 
   const handleChange = (color: ColorResult) => {
     // this.setState({ color: color.rgb });
-    setColor(color.rgb);
+    setColor(color.hex);
   };
   const handleCancel = () => {
     setVisible(false);
+  };
+  const onAccept = () => {
+    props.onClick('zitiyanse', color);
   };
   return <>
     <Button onClick={handleClick} name={'zitiyanse'} desc={'字体颜色'} type={'button'}/>
@@ -35,6 +33,7 @@ const ColorInput: React.FC = () => {
           onChange={handleChange}
           onCancel={handleCancel}
           header='颜色选择'
+          onAccept={onAccept}
         />
       </div>
     </div>

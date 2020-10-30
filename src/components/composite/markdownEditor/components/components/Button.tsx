@@ -2,10 +2,10 @@ import React from 'react';
 import styles from './Button.less';
 import {Tooltip} from 'antd';
 
-export type IButton = { name: string, desc: string, type: 'button' | 'line', onClick?: () => void }
+export type IButton = { name: string, desc: string, type: 'button' | 'line', onClick?: (name: string, value?: string) => void }
 const Common: React.FC<IButton> = (props) => {
   const onClick = () => {
-    props.onClick && props.onClick();
+    props.onClick && props.onClick(props.name);
   };
   return <>
     <Tooltip title={props.desc}>
