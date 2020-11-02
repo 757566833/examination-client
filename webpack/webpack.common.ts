@@ -45,9 +45,11 @@ const commonConfig: webpack.Configuration = {
             options: {
               modules: {
                 localIdentName: '[path][name]__[local]--[hash:base64:5]',
-                auto: (resourcePath: string) =>
-                  !resourcePath.includes('node_modules') &&
-                  !resourcePath.includes('global.less'),
+                auto: (resourcePath: string) => {
+                  console.log(resourcePath);
+                  return !resourcePath.includes('node_modules') &&
+                  !resourcePath.includes('global.less')&&!resourcePath.includes('src/asset');
+                },
               },
             },
           },
