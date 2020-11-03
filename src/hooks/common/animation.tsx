@@ -20,4 +20,4 @@ const useAnimationState = <S extends unknown>(initialState: S | (() => S)): [S, 
   return [state, setRafState];
 };
 
-export default useRafState;
+export default useAnimationState;

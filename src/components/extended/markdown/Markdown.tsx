@@ -2,9 +2,6 @@ import React, {ElementType} from 'react';
 import ReactMarkdown from 'react-markdown';
 import gfm from 'remark-gfm';
 import math from 'remark-math';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import mermaid from 'remark-mermaid';
 // 数学符号库 这玩意没ts文件
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -50,7 +47,6 @@ const Markdown: React.FC<{ value: string }> = (props) => {
       plugins={[
 
         gfm,
-        mermaid,
         math]}
     >
       {props.value}

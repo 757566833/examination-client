@@ -3,10 +3,10 @@ import {Input} from 'antd';
 import Markdown from '@/components/extended/markdown/Markdown';
 import styles from './MarkdownEditor.less';
 import {markdownDefaultValue} from '@/config/defaultValue';
-import DragLine from '@/components/custom/dragLine/DragLIne';
 import Line from '@/components/custom/line/Line';
 import ToolsBar, {EButtonName, IToolsClickParams} from '@/components/composite/markdownEditor/components/ToolsBar';
 import toolsBarExecCommand from '@/components/composite/markdownEditor/components/util/toolsBarExecCommand';
+import DragLine from '@/components/extended/dragLine/DragLine';
 
 const MarkdownEditor: React.FC = () => {
   const [text, setText] = useState(markdownDefaultValue);

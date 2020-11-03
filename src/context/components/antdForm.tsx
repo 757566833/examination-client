@@ -10,6 +10,7 @@ export const antdProvider:ConfigProviderProps ={
     },
   },
   getPopupContainer: (node)=>{
+    console.log(node);
     if (node&&node.parentElement) {
       return node.parentElement;
     }
