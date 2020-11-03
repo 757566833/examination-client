@@ -42,15 +42,14 @@ export type IButtonCollection = EButtonName.后退 |
   EButtonName.无序列表 |
   EButtonName.多选序列 |
   EButtonName.表格 |
-  EButtonName.代码 |
-  EButtonName.流程
+  EButtonName.代码
 export type IToolsClickParams =
   {
     name: IButtonCollection
   }
   | { name: EButtonName.字体颜色, value: string }
 
-
+  | { name: EButtonName.流程, value: string }
 export interface IToolsBar {
   onClick: (params: IToolsClickParams) => void
 }
@@ -63,7 +62,9 @@ const ToolsBar: React.FC<IToolsBar> = (props) => {
   const onColor = (name: EButtonName.字体颜色, value: string) => {
     props.onClick({name, value});
   };
-
+  const onFlow = (name: EButtonName.流程, value: string) => {
+    props.onClick({name, value});
+  };
   const buttonList: ITool[] = [
     {type: 'button', name: EButtonName.后退, desc: '后退', onClick},
     {type: 'button', name: EButtonName.前进, desc: '前进', onClick},
@@ -88,9 +89,10 @@ const ToolsBar: React.FC<IToolsBar> = (props) => {
     {type: 'line'},
     {type: 'button', name: EButtonName.表格, desc: '表格', onClick},
     {type: 'button', name: EButtonName.代码, desc: '代码', onClick},
-    {type: 'button', name: EButtonName.流程, desc: '流程', onClick},
     {type: 'line'},
     {type: 'color', name: EButtonName.字体颜色, desc: '字体颜色', onClick: onColor},
+    {type: 'line'},
+    {type: 'flow', name: EButtonName.流程, desc: '流程', onClick: onFlow},
   ];
   return <div className={`${styles.toolsBar} flex`}>
     {buttonList.map((item, index) => {

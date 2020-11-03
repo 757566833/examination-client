@@ -5,5 +5,6 @@ moment.locale('zh-cn');
 // import 'braft-editor/dist/index.css';
 
 import '@/asset/markdown/iconfont';
+import '@/asset/antv/iconfont';
 import 'github-markdown-css/github-markdown.css';
 console.log('global');

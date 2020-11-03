@@ -28,6 +28,9 @@ const MarkdownEditor: React.FC = () => {
     if (typeof start == 'number' && typeof end == 'number' && end > start) {
       if (params.name == EButtonName.字体颜色) {
         toolsBarExecCommand({name: params.name, text: text.slice(start, end), value: params.value});
+      } else if (params.name == EButtonName.流程) {
+        // console.log('dsadsa');
+        // toolsBarExecCommand({name: params.name, text: text.slice(start, end)});
       } else {
         console.log('dsadsa');
         toolsBarExecCommand({name: params.name, text: text.slice(start, end)});

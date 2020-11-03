@@ -9,8 +9,8 @@ interface IModal {
   className?: any;
   title?: string;
   style?: React.CSSProperties;
-  width?: number
-  height?: number
+  defaultSize?: [number, number]
+  onZoomEnd?: (width: number, height: number) => void
 }
 
 export interface IDragModal extends IModal {
@@ -27,8 +27,8 @@ const getMin = (current: number, min: number) => {
 };
 
 const Modal: React.FC<IModal> = (props) => {
-  const [width, setWidth] = useState(props.width ? props.width : defaultWidth);
-  const [height, setHeight] = useState(props.height ? props.height : defaultHeight);
+  const [width, setWidth] = useState(props.defaultSize ? props.defaultSize[0] : defaultWidth);
+  const [height, setHeight] = useState(props.defaultSize ? props.defaultSize[1] : defaultHeight);
   const [point, setPoint] = useState<[number, number]>(defaultPoint);
   const onTitleMove = (offset: [number, number]) => {
     setPoint([
@@ -86,15 +86,19 @@ const Modal: React.FC<IModal> = (props) => {
     ]);
   };
 
-  const onModalBodyPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
-    event.stopPropagation();
-    event.preventDefault();
-  };
+
+  // // eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/no-unused-vars-experimental
+  // const onModalBodyPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+  //   // event.stopPropagation();
+  //   // event.preventDefault();
+  // };
   const onClose = () => {
     props.onCancel();
   };
+  const onEnd = () => {
+    props.onZoomEnd && props.onZoomEnd(width, height);
+  };
   return <div
-    {...props}
     style={props.style ?
       {...props.style, width, height, top: point[1], left: point[0]} :
       {width, height, top: point[1], left: point[0]}
@@ -102,19 +106,54 @@ const Modal: React.FC<IModal> = (props) => {
     className={props.className ? `${props.className} ${styles.modal} flex` : `${styles.modal} flex`}
 
   >
-    <Drag onMove={onTitleMove} className={`${styles.title} flex`}>
+    <Drag
+      onMove={onTitleMove}
+      className={`${styles.title} flex`}
+      onEnd={onEnd}
+    >
       <div>{props.title}</div>
       <div><CloseCircleTwoTone onClick={onClose}/></div>
     </Drag>
-    <Drag onMove={onRightUpMove} className={styles.upRight}/>
-    <Drag onMove={onRightMove} className={styles.right}/>
-    <Drag onMove={onRightDownMove} className={styles.rightDown}/>
-    <Drag onMove={onDownMove} className={styles.down}/>
-    <Drag onMove={onDownLeftMove} className={styles.downLeft}/>
-    <Drag onMove={onLeftMove} className={styles.left}/>
-    <Drag onMove={onLeftUpMove} className={styles.leftUp}/>
+    <Drag
+      onMove={onRightUpMove}
+      className={styles.upRight}
+      onEnd={onEnd}
+    />
+    <Drag
+      onMove={onRightMove}
+      className={styles.right}
+      onEnd={onEnd}
+    />
+    <Drag
+      onMove={onRightDownMove}
+      className={styles.rightDown}
+      onEnd={onEnd}
+    />
+    <Drag
+      onMove={onDownMove}
+      className={styles.down}
+      onEnd={onEnd}
+    />
+    <Drag
+      onMove={onDownLeftMove}
+      className={styles.downLeft}
+      onEnd={onEnd}
+    />
+    <Drag
+      onMove={onLeftMove}
+      className={styles.left}
+      onEnd={onEnd}
+    />
+    <Drag
+      onMove={onLeftUpMove}
+      className={styles.leftUp}
+      onEnd={onEnd}
+    />
     <Line/>
-    <div className={styles.modalBody} onPointerDown={onModalBodyPointerDown}>
+    <div
+      className={styles.modalBody}
+      // onPointerDown={onModalBodyPointerDown}
+    >
       {props.children}
     </div>
 
@@ -130,8 +169,7 @@ const DragModal: React.FC<IDragModal> = (props) => {
       className={props.className}
       title={props.title}
       style={props.style}
-      width={props.width}
-      height={props.height}
+      defaultSize={props.defaultSize}
     >
       {props.children}
     </Modal>}
@@ -139,12 +177,10 @@ const DragModal: React.FC<IDragModal> = (props) => {
   }
   return <Modal
     className={props.visible ? `${props.className}` : 'disappear'}
-
     onCancel={props.onCancel}
     title={props.title}
     style={props.style}
-    width={props.width}
-    height={props.height}
+    defaultSize={props.defaultSize}
   >
     {props.children}
   </Modal>;

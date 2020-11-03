@@ -64,9 +64,9 @@ const toolsBarExecCommand = (params: { name: IButtonCollection, text: string } |
     case EButtonName.代码:
       document.execCommand('insertText', false, `~~~javascript \n ${params.text} \n ~~~`);
       break;
-    case EButtonName.流程:
-      document.execCommand('insertText', false, `\`\`\`flow \n st=>start: 开始 \n op=>operation: My Operation \n cond=>condition: Yes or No? \n e=>end \n st->op->cond \n cond(yes)->e \n cond(no)->op \n &\`\`\``);
-      break;
+      // case EButtonName.流程:
+      //   document.execCommand('insertText', false, `\`\`\`flow \n st=>start: 开始 \n op=>operation: My Operation \n cond=>condition: Yes or No? \n e=>end \n st->op->cond \n cond(yes)->e \n cond(no)->op \n &\`\`\``);
+      //   break;
 
     case EButtonName.字体颜色:
       document.execCommand('insertText', false, `～～${params.text}～～`);
