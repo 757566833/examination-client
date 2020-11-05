@@ -1,203 +1,153 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import G6, {Graph} from '@antv/g6';
-import ToolsBar from './components/ToolsBar';
+import ToolsBar, {EToolTag} from './components/ToolsBar';
+import {ENode} from './components/components/Nodes';
+import {beanNode} from '@/components/extended/g6Editor/bean';
+import {Button} from 'antd';
+
+export enum ENodeShape {
+  圆形 = 'circle',
+  矩形 = 'rect',
+  椭圆 = 'ellipse',
+  菱形 = 'diamond',
+  三角形 = 'triangle',
+  星 = 'star',
+  图片 = 'image',
+  卡片 = 'ModelRect'
+}
 
 const G6Editor: React.FC<{ width: number, height: number }> = (props) => {
   const ref = useRef<HTMLDivElement>(null);
+  const addType = useRef(ENodeShape.圆形);
 
-  // /**
-  //  * 该案例演示切换交互模式，在不同模式下实现拖动节点、增加节点、增加边的交互行为。
-  //  */
+  const onSelect = (selected: ENode, type: EToolTag) => {
+    if (graph.current) {
+      switch (type) {
+        case EToolTag.操作:
+          graph.current.setMode('default');
+          break;
+        case EToolTag.节点:
+          graph.current.setMode('addNode');
+          break;
+        case EToolTag.线:
+          graph.current.setMode('addEdge');
+          break;
+      }
 
-  // // Register a custom behavior: click two end nodes to add an edge
-  // G6.registerBehavior('click-add-edge', {
-  //   // Set the events and the corresponding responsing function for this behavior
-  //   getEvents() {
-  //     return {
-  //       'node:click': 'onClick', // The event is canvas:click, the responsing function is onClick
-  //       'mousemove': 'onMousemove', // The event is mousemove, the responsing function is onMousemove
-  //       'edge:click': 'onEdgeClick', // The event is edge:click, the responsing function is onEdgeClick
-  //     };
-  //   },
-  //   // The responsing function for node:click defined in getEvents
-  //   onClick(ev) {
-  //     const self = this;
-  //     const node = ev.item;
-  //     const graph = self.graph;
-  //     // The position where the mouse clicks
-  //     const point = {x: ev.x, y: ev.y};
-  //     const model = node.getModel();
-  //     if (self.addingEdge && self.edge) {
-  //       graph.updateItem(self.edge, {
-  //         target: model.id,
-  //       });
-  //
-  //       self.edge = null;
-  //       self.addingEdge = false;
-  //     } else {
-  //       // Add anew edge, the end node is the current node user clicks
-  //       self.edge = graph.addItem('edge', {
-  //         source: model.id,
-  //         target: model.id,
-  //       });
-  //       self.addingEdge = true;
-  //     }
-  //   },
-  //   // The responsing function for mousemove defined in getEvents
-  //   onMousemove(ev) {
-  //     const self = this;
-  //     // The current position the mouse clicks
-  //     const point = {x: ev.x, y: ev.y};
-  //     if (self.addingEdge && self.edge) {
-  //       // Update the end node to the current node the mouse clicks
-  //       self.graph.updateItem(self.edge, {
-  //         target: point,
-  //       });
-  //     }
-  //   },
-  //   // The responsing function for edge:click defined in getEvents
-  //   onEdgeClick(ev) {
-  //     const self = this;
-  //     const currentEdge = ev.item;
-  //     if (self.addingEdge && self.edge === currentEdge) {
-  //       self.graph.removeItem(self.edge);
-  //       self.edge = null;
-  //       self.addingEdge = false;
-  //     }
-  //   },
-  // });
-  // // Initial data
-  // const data = {
-  //   nodes: [
-  //     {
-  //       id: 'node1',
-  //       x: 100,
-  //       y: 200,
-  //     },
-  //     {
-  //       id: 'node2',
-  //       x: 300,
-  //       y: 200,
-  //     },
-  //     {
-  //       id: 'node3',
-  //       x: 300,
-  //       y: 300,
-  //     },
-  //   ],
-  //   edges: [
-  //     {
-  //       id: 'edge1',
-  //       target: 'node2',
-  //       source: 'node1',
-  //     },
-  //   ],
-  // };
-  //
-  // const graphContainer = document.getElementById('container');
-  //
-  // // Add a selector to DOM
-  // const selector = document.createElement('select');
-  // selector.id = 'selector';
-  // const selection1 = document.createElement('option');
-  // selection1.value = 'default';
-  // selection1.innerHTML = 'Default Mode';
-  // const selection2 = document.createElement('option');
-  // selection2.value = 'addNode';
-  // selection2.innerHTML = 'Add Node (By clicking canvas)';
-  // const selection3 = document.createElement('option');
-  // selection3.value = 'addEdge';
-  // selection3.innerHTML = 'Add Edge (By clicking two end nodes)';
-  // selector.appendChild(selection1);
-  // selector.appendChild(selection2);
-  // selector.appendChild(selection3);
-  // graphContainer.appendChild(selector);
-  //
-  // const width = document.getElementById('container').scrollWidth;
-  // const height = document.getElementById('container').scrollHeight || 500;
-  // const graph:Graph = new G6.Graph({
-  //   container: ref.current,
-  //   width,
-  //   height,
-  //   // The sets of behavior modes
-  //   modes: {
-  //     // Defualt mode
-  //     default: ['drag-node', 'click-select'],
-  //     // Adding node mode
-  //     addNode: ['click-add-node', 'click-select'],
-  //     // Adding edge mode
-  //     addEdge: ['click-add-edge', 'click-select'],
-  //   },
-  //   // The node styles in different states
-  //   nodeStateStyles: {
-  //     // The node styles in selected state
-  //     selected: {
-  //       stroke: '#666',
-  //       lineWidth: 2,
-  //       fill: 'steelblue',
-  //     },
-  //   },
-  // });
-  // graph.data(data);
-  // graph.render();
-  //
-  // // Listen to the selector, change the mode when the selector is changed
-  // selector.addEventListener('change', (e) => {
-  //   const value = e.target.value;
-  //   // change the behavior mode
-  //   graph.setMode(value);
-  // });
+      switch (selected) {
+        case ENode.圆形:
+          addType.current = ENodeShape.圆形;
+          break;
+        case ENode.矩形:
+          addType.current = ENodeShape.矩形;
+          break;
+        // case ENode.椭圆:
+        //   addType.current = ENodeShape.椭圆;
+        //   break;
+        case ENode.菱形:
+          addType.current = ENodeShape.菱形;
+          break;
+        case ENode.三角形:
+          addType.current = ENodeShape.三角形;
+          break;
+        // case ENode.三角形:
+        //   addType.current = ENodeShape.三角形;
+        //   break;
+        // case ENode.三角形:
+        //   addType.current = ENodeShape.三角形;
+        //   break;
+        // case ENode.三角形:
+        //   addType.current = ENodeShape.三角形;
+        //   break;
+      }
+    }
+  };
   let addedCount = 0;
   // // Register a custom behavior: add a node when user click the blank part of canvas
 
   const graph = useRef<Graph | null>(null);
   G6.registerBehavior('click-add-node', {
-    // Set the events and the corresponding responsing function for this behavior
     getEvents() {
-      // The event is canvas:click, the responsing function is onClick
       return {
         'canvas:click': 'onClick',
       };
     },
-    // Click event
     onClick(ev: any) {
-      // Add a new node
-      console.log('dsa');
-      graph.current?.addItem('node', {
-        x: ev.canvasX,
-        y: ev.canvasY,
-        id: `node-${addedCount}`, // Generate the unique id
-      });
+      graph.current?.addItem('node',
+        // {
+        // x: ev.canvasX,
+        // y: ev.canvasY,
+        // type: addType.current,
+        // id: `node-${addedCount}`, // Generate the unique id
+        //
+        // }
+        beanNode(ev.canvasX, ev.canvasY, addType.current, addedCount)
+      );
       addedCount++;
     },
   });
+
   useEffect(() => {
     if (ref.current && graph.current == null) {
       graph.current = new G6.Graph({
         container: ref.current,
         width: props.width,
         height: props.height,
+        renderer: 'svg',
         // The sets of behavior modes
+        defaultNode: {
+          // ... 其他属性
+          linkPoints: {
+            top: true,
+            bottom: true,
+            left: true,
+            right: true,
+            leftBottom: true,
+            rightBottom: true,
+            // fill: '#fff',
+            size: 10,
+            lineWidth: 1,
+            fill: '#fff',
+            stroke: '#1890FF',
+          },
+        },
         modes: {
           default: [
             'drag-combo',
-            'collapse-expand-combo',
+            // 'collapse-expand-combo',
             'drag-canvas',
             'zoom-canvas',
             'drag-node',
             'click-select',
             'tooltip',
             'edge-tooltip',
-            'activate-relations',
-            'brush-select',
-            'lasso-select',
-            'collapse-expand',
-            'collapse-expand-group',
-            'drag-group',
-            'drag-node-with-group',
-            'create-edge',
-
+            // 'activate-relations',
+            // 'brush-select',
+            // 'lasso-select',
+            // 'collapse-expand',
+            // 'collapse-expand-group',
+            // 'drag-group',
+            // 'drag-node-with-group',
+            // 'create-edge',
+          ],
+          addNode: [
             'click-add-node',
+            'drag-canvas',
+            'zoom-canvas',
+            'drag-node',
+            'click-select',
+            'tooltip',
+            'edge-tooltip',
+            'click-add-node',
+          ],
+          addEdge: [
+            'click-add-edge',
+            'drag-canvas',
+            'zoom-canvas',
+            'drag-node',
+            'click-select',
+            'tooltip',
+            'edge-tooltip',
           ],
         },
         // The node styles in different states
@@ -213,35 +163,65 @@ const G6Editor: React.FC<{ width: number, height: number }> = (props) => {
       graph.current.data({
         nodes: [
           {
-            id: 'node1',
+            id: 'circle',
             x: 100,
-            y: 200,
+            y: 150,
+            type: 'circle',
+            size: [80],
           },
           {
-            id: 'node2',
-            x: 300,
-            y: 200,
+            id: 'ellipse',
+            type: 'ellipse',
+            x: 200,
+            y: 150,
+            size: [80, 50],
           },
           {
-            id: 'node3',
+            id: 'rect',
             x: 300,
-            y: 300,
+            y: 150,
+            type: 'rect',
+            size: [80, 50],
+          },
+          {
+            id: 'circle2',
+            //   label: 'Triangle',
+            x: 400,
+            y: 150,
+            type: 'triangle',
+            size: [50],
+          },
+          {
+            id: 'star',
+            // label: 'Star',
+            x: 500,
+            y: 150,
+            type: 'star',
+            size: [50],
+          },
+          {
+            id: 'diamond',
+            x: 600,
+            y: 150,
+            type: 'diamond',
+            size: [60, 80],
           },
         ],
-        edges: [
-          {
-            id: 'edge1',
-            target: 'node2',
-            source: 'node1',
-          },
-        ],
+        // edges: [
+        //   {
+        //     id: 'edge1',
+        //     target: 'node2',
+        //     source: 'node1',
+        //   },
+        // ],
       });
       graph.current.render();
       graph.current.setMode('default');
     }
   }, [props.height, props.width]);
   return <div>
-    <ToolsBar/>
+    <ToolsBar onSelect={onSelect}/>
+    {/* <Button onClick={()=>graph.current?.downloadImage()}>导出</Button>*/}
     <div ref={ref}/>
   </div>;
 };
