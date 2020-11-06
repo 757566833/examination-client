@@ -1,8 +1,7 @@
-import {NodeConfig} from '@antv/g6/lib/types';
-import {ENodeShape} from '@/components/extended/g6Editor/G6Editor';
 import {ModelConfig} from '@antv/g6/es/types';
+import {ENode} from '@/components/extended/g6Editor/components/components/Nodes';
 
-const beanNode4:ModelConfig = {
+const beanNode4: ModelConfig = {
   linkPoints: {
     top: true,
     bottom: true,
@@ -49,13 +48,25 @@ const beanNode5: ModelConfig = {
     [1, 1],
     [0, 1],
   ],
+
 };
-export const beanNode: (x: number, y: number, type: ENodeShape, count: number) => ModelConfig = (x: number, y: number, type: ENodeShape, count: number) => {
+export const beanNode: (x: number, y: number, type: ENode, count: number) => ModelConfig = (x: number, y: number, type: ENode, count: number) => {
+  const defaultShape: ModelConfig = {
+    x, y,
+    type: type,
+    id: `node-${count}`,
+  };
   switch (type) {
-    case ENodeShape.圆形:
-      return {...beanNode4, x, y, id: `node-${count}`};
-    case ENodeShape.三角形:
-      return {...beanNode3, x, y, id: `node-${count}`};
+    case ENode.圆形:
+      return {
+        ...beanNode4,
+        ...defaultShape,
+      };
+    case ENode.三角形:
+      return {
+        ...beanNode3,
+        ...defaultShape,
+      };
   }
   return {...beanNode4, x, y, id: `node-${count}`};
 };

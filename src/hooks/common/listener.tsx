@@ -1,5 +1,6 @@
 import {RefObject, useEffect} from 'react';
-import {useAnimationState} from '@/hooks/common/index';
+import useAnimationState from '@/hooks/common/animation';
+
 
 export interface State {
   docX: number;

@@ -19,8 +19,8 @@ const MouseListenerProvider: React.FC = (props) => {
   const [state, setState] = useState<IState>(defaultState);
   useEffect(() => {
     const handler = (event: MouseEvent) => {
-      event.stopPropagation();
-      event.preventDefault();
+      // event.stopPropagation();
+      // event.preventDefault();
       setState({
         x: event.pageX,
         y: event.pageY,

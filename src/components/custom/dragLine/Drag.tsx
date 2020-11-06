@@ -19,8 +19,9 @@ const Drag: React.FC<IDragLineProps> = (props) => {
     setIsMoved(false);
   }, 280);
   const {state} = useMouseContent();
-  const onPointerDown = () => {
-    // event.stopPropagation();
+  const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+    // event.preventDefault();
     setIsMoved(true);
     setInitClient([state.x, state.y]);
     setCurrentClient([state.x, state.y]);
@@ -50,6 +51,9 @@ const Drag: React.FC<IDragLineProps> = (props) => {
             [state.x, state.y],
         );
         setCurrentClient([state.x, state.y]);
+        // window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
+        // window.getSelection().removeAllRanges()
+        window.getSelection()?.removeAllRanges();
       }
     }
   }, [currentClient, isMoved, props, state.x, state.y]);
