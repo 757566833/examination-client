@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import styles from './Drag.less';
 import {useMouseContent} from '@/hooks/context';
 import {useTimeout} from '@/hooks/common/time';
+import {useDocumentSelect} from '@/hooks/document';
 
 interface IDragLineProps {
   // type: 'horizontal' | 'vertical',
@@ -15,20 +16,24 @@ const Drag: React.FC<IDragLineProps> = (props) => {
   const [isMoved, setIsMoved] = useState(false);
   const [initClient, setInitClient] = useState<[number, number]>(defaultValue);
   const [currentClient, setCurrentClient] = useState<[number, number]>(defaultValue);
+  const [switchSelect] = useDocumentSelect();
   const [, clear, set] = useTimeout(() => {
     setIsMoved(false);
+    switchSelect(true);
   }, 280);
   const {state} = useMouseContent();
   const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     event.stopPropagation();
     // event.preventDefault();
     setIsMoved(true);
+    switchSelect(false);
     setInitClient([state.x, state.y]);
     setCurrentClient([state.x, state.y]);
     // return false;
   };
   const onPointerUp = () => {
     setIsMoved(false);
+    switchSelect(true);
     setInitClient(defaultValue);
     setCurrentClient(defaultValue);
     props.onEnd && props.onEnd(
@@ -53,7 +58,7 @@ const Drag: React.FC<IDragLineProps> = (props) => {
         setCurrentClient([state.x, state.y]);
         // window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
         // window.getSelection().removeAllRanges()
-        window.getSelection()?.removeAllRanges();
+        // window.getSelection()?.removeAllRanges();
       }
     }
   }, [currentClient, isMoved, props, state.x, state.y]);
