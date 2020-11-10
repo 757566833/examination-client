@@ -1,7 +1,5 @@
 import React from 'react';
-import Common from './components/Common';
 import styles from './Nodes.less';
-import {EToolTag, IToolGroup} from '../ToolsBar';
 import circle from '@/asset/antv/circle.svg';
 import ellipse from '@/asset/antv/ellipse.svg';
 import rect from '@/asset/antv/rect.svg';
@@ -28,7 +26,7 @@ const nodeList: { src: string, type: string }[] = [
   {src: triangle, type: ENode.菱形},
 ];
 
-const Nodes: React.FC<IToolGroup> = () => {
+const Nodes: React.FC = () => {
   // const onClick = (name: ENode, type: EToolTag) => {
   //   props.onSelect(name, type);
   // };

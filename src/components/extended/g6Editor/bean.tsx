@@ -26,11 +26,11 @@ const beanNode3: ModelConfig = {
     fill: '#fff',
     size: 5,
   },
-  anchorPoints: [
-    [0.5, 0],
-    [0, 1],
-    [1, 1],
-  ],
+  // anchorPoints: [
+  //   [0.5, 0],
+  //   [0, 1],
+  //   [1, 1],
+  // ],
 };
 const beanNode5: ModelConfig = {
   linkPoints: {
@@ -41,13 +41,13 @@ const beanNode5: ModelConfig = {
     fill: '#fff',
     size: 5,
   },
-  anchorPoints: [
-    [0.5, 0],
-    [0.75, 0.25],
-    [0.75, 0.5],
-    [1, 1],
-    [0, 1],
-  ],
+  // anchorPoints: [
+  //   [0.5, 0],
+  //   [0.75, 0.25],
+  //   [0.75, 0.5],
+  //   [1, 1],
+  //   [0, 1],
+  // ],
 
 };
 export const beanNode: (x: number, y: number, type: ENode, count: number) => ModelConfig = (x: number, y: number, type: ENode, count: number) => {

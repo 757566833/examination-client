@@ -1,107 +1,139 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import G6, {Graph} from '@antv/g6';
 import ToolsBar from './components/ToolsBar';
 import {ENode} from './components/components/Nodes';
 import {beanNode} from '@/components/extended/g6Editor/bean';
+import {IG6GraphEvent} from '@antv/g6/lib/types';
+import {Item} from '@antv/g6/lib/types';
 
 
 const G6Editor: React.FC<{ width: number, height: number }> = (props) => {
   const ref = useRef<HTMLDivElement>(null);
-
-
   let addedCount = 0;
   // // Register a custom behavior: add a node when user click the blank part of canvas
-  const onSelect = () => {
-    //
-  };
   const graph = useRef<Graph | null>(null);
-  // G6.registerBehavior('click-add-node', {
-  //   getEvents() {
-  //     return {
-  //       'canvas:click': 'onClick',
-  //     };
-  //   },
-  //   onClick(ev: any) {
-  //     graph.current?.addItem('node',
-  //       // {
-  //       // x: ev.canvasX,
-  //       // y: ev.canvasY,
-  //       // type: addType.current,
-  //       // id: `node-${addedCount}`, // Generate the unique id
-  //       //
-  //       // }
-  //       beanNode(ev.canvasX, ev.canvasY, addType.current, addedCount)
-  //     );
-  //     addedCount++;
-  //   },
-  // });
+  const [active, setActive] = useState<'drag' | 'line'>('drag');
+  const onActiveChange = (ac: 'drag' | 'line') => {
+    setActive(ac);
+    if (ac != 'drag') {
+      graph.current?.setMode('addEdge');
+      // graph.current?.update({
+      //
+      // });
+    } else {
+      graph.current?.setMode('default');
+    }
+  };
+  G6.registerBehavior('activate-any', {
 
+    getEvents() {
+      return {
+        'edge:click': 'onNodeClick',
+        'canvas:click': 'onCanvasClick',
+      };
+    },
+    onNodeClick(e: any) {
+      console.log(e);
+      const aaa: any = window;
+      aaa.tttt = e;
+      setSelected({
+        type: 'edge',
+        value: e.item.getModel().label,
+        item: e.item,
+      });
+    },
+    onCanvasClick() {
+      setSelected(null);
+    },
+  });
+
+  const [selected, setSelected] = useState<{ type: 'edge' | 'node', value: string, item: Item } | null>(null);
+  const onLabelChange = (value: string) => {
+    if (selected) {
+      setSelected({
+        ...selected,
+        value,
+      });
+      graph.current?.updateItem(selected.item, {label: value}, true);
+    }
+  };
+  const onEdgeChange = (value: string) => {
+    let type = '';
+
+    switch (value) {
+      case 'horizontal':
+        type = 'cubic-horizontal';
+        break;
+      case 'vertical':
+        type = 'cubic-vertical';
+        break;
+    }
+    console.log(value, type);
+
+    if (selected && type) {
+      graph.current?.updateItem(selected.item, {type: type}, true);
+      console.log(graph.current?.getEdges());
+    }
+  };
+  const onDelete = () => {
+    if (selected?.item) {
+      graph.current?.removeItem(selected?.item);
+    }
+  };
   useEffect(() => {
     if (ref.current && graph.current == null) {
       graph.current = new G6.Graph({
         container: ref.current,
         width: props.width,
         height: props.height,
+        linkCenter: false,
         renderer: 'svg',
-        // The sets of behavior modes
-        defaultNode: {
-          // ... 其他属性
-          linkPoints: {
-            top: true,
-            bottom: true,
-            left: true,
-            right: true,
-            leftBottom: true,
-            rightBottom: true,
-            // fill: '#fff',
-            size: 10,
-            lineWidth: 1,
-            fill: '#fff',
-            stroke: '#1890FF',
-          },
+        enabledStack: true,
+        defaultEdge: {
+          type: 'cubic-horizontal',
+          // configure the bending radius and min distance to the end nodes
+          style:
+            {
+              radius: 10,
+              offset: 30,
+              endArrow: true,
+              lineWidth: 3,
+              stroke: '#F6BD16',
+            },
         },
         modes: {
-          default: [
-            'drag-combo',
-            // 'collapse-expand-combo',
-            'drag-canvas',
-            'zoom-canvas',
-            'drag-node',
-            'click-select',
-            'tooltip',
-            'edge-tooltip',
-            // 'activate-relations',
-            // 'brush-select',
-            // 'lasso-select',
-            // 'collapse-expand',
-            // 'collapse-expand-group',
-            // 'drag-group',
-            // 'drag-node-with-group',
-            // 'create-edge',
-          ],
-          addNode: [
-            'click-add-node',
-            'drag-canvas',
-            'zoom-canvas',
-            'drag-node',
-            'click-select',
-            'tooltip',
-            'edge-tooltip',
-            'click-add-node',
-          ],
+          default:
+            [
+              'drag-combo',
+              'drag-canvas',
+              'zoom-canvas',
+              'drag-node',
+              'click-select',
+              'activate-relations',
+              'activate-any',
+            ],
           addEdge: [
-            'click-add-edge',
-            'drag-canvas',
+            // 'drag-combo',
+            // 'drag-canvas',
             'zoom-canvas',
-            'drag-node',
+            // 'drag-node',
             'click-select',
-            'tooltip',
-            'edge-tooltip',
+            'activate-relations',
+            'create-edge',
           ],
         },
         // The node styles in different states
         nodeStateStyles: {
           // The node styles in selected state
+          selected: {
+            stroke: 'blue',
+            lineWidth: 2,
+            // fill: 'steelblue',
+          },
+        },
+        edgeStateStyles: {
+          // The node styles in selected state
+
           selected: {
             stroke: '#666',
             lineWidth: 2,
@@ -117,6 +149,7 @@ const G6Editor: React.FC<{ width: number, height: number }> = (props) => {
             y: 150,
             type: 'circle',
             size: [80],
+            label: 'dsa',
           },
           {
             id: 'ellipse',
@@ -166,6 +199,17 @@ const G6Editor: React.FC<{ width: number, height: number }> = (props) => {
       });
       graph.current.render();
       graph.current.setMode('default');
+      graph.current.on('nodeselectchange', (e: IG6GraphEvent) => {
+        // 当前操作的 item
+        console.log(e.target?.getID());
+        if (e.target) {
+          setSelected({
+            type: 'node',
+            value: e.target.getModel().label as string,
+            item: e.target as any,
+          });
+        }
+      });
     }
   }, [props.height, props.width]);
   const onDragEnd = (event: React.DragEvent<HTMLDivElement>) => {
@@ -186,7 +230,12 @@ const G6Editor: React.FC<{ width: number, height: number }> = (props) => {
   };
   return <div>
     <ToolsBar
-      onSelect={onSelect}
+      active={active}
+      onActiveChange={onActiveChange}
+      selected={selected}
+      onLabelChange={onLabelChange}
+      onEdgeChange={onEdgeChange}
+      onDelete={onDelete}
     />
     {/* <Button onClick={()=>graph.current?.downloadImage()}>导出</Button>*/}
     <div ref={ref} onDrop={onDragEnd}/>
