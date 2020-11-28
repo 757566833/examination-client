@@ -1,17 +1,38 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Modal, Tabs, Space, Tooltip} from 'antd';
+import {Button, Modal, Tabs, Space, Tooltip, Dropdown, Menu} from 'antd';
 import GithubLogo from '@/asset/login/github.svg';
 import styles from './index.less';
 import Register from './components/register';
 import Login from './components/login';
 import {useLocalStorage} from '@/hooks/context';
-import {useHistory} from 'react-router';
+import {useHistory, Link} from 'react-router-dom';
 import {useSocket} from '@/hooks/notHook/webSocket';
 import {clientId, returnUrl} from '@/config/oauth';
 
+
 const UserCenter: React.FC = () => {
   const [visible, setVisible] = useState(false);
-
+  const [, , removeToken] = useLocalStorage('token');
+  const his = useHistory();
+  const goCenter = () => {
+    his.push('/center');
+  };
+  const logout = () => {
+    removeToken();
+    his.push('/');
+  };
+  const menu = (<Menu>
+    <Menu.Item>
+      <Button type="link" size='small' onClick={goCenter}>
+        个人中心
+      </Button>
+    </Menu.Item>
+    <Menu.Item>
+      <Button type="link" size='small' onClick={logout}>
+        退出
+      </Button>
+    </Menu.Item>
+  </Menu>);
   const onCancel = () => {
     setVisible(false);
   };
@@ -22,13 +43,12 @@ const UserCenter: React.FC = () => {
     setVisible(true);
   };
   const [token] = useLocalStorage('token');
-  const his = useHistory();
-  const goCenter = () => {
-    his.push('/center');
-  };
-
   return <div>
-    {token ? <Button type="link" onClick={goCenter}>个人中心</Button> : <Button type="link" onClick={onShow}>登陆</Button>}
+    {token ?
+      <Dropdown overlay={menu}>
+        <Button type="link">个人中心</Button>
+      </Dropdown> :
+      <Button type="link" onClick={onShow}>登陆</Button>}
     <Modal
       // title="请选择登陆方式"
       visible={visible}
@@ -47,7 +67,7 @@ const UserCenter: React.FC = () => {
         centered={true}
         // keyboard={false}
       >
-        <Tabs.TabPane tab="登陆1" key="login">
+        <Tabs.TabPane tab="登陆" key="login">
           <div className={`${styles.login}`}>
             <Login onSuccess={onCancel}/>
 

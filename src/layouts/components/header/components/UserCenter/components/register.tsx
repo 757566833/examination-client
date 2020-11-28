@@ -86,6 +86,7 @@ const Register: React.FC<{ onSuccess: () => void }> = (props) => {
             placeholder="验证码"
           />
         </Form.Item>
+        <img style={{width: 16}}/>
         <Form.Item
           className={styles.form_item_inline_block}
         >

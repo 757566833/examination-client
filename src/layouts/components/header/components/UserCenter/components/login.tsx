@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Form, Input, Checkbox, Button, message} from 'antd';
+import {Form, Input, Button, message} from 'antd';
 import {Store} from 'rc-field-form/lib/interface';
 import {UserOutlined, LockOutlined} from '@ant-design/icons';
 import styles from './index.less';
@@ -35,7 +35,7 @@ const Login: React.FC<{ onSuccess: () => void }> = (props) => {
       onFinish={onFinish}
     >
       <Form.Item
-        // label="邮箱"
+        label="邮箱"
         name="email"
         rules={[{required: true}, {type: 'email'}]}
       >
@@ -46,7 +46,7 @@ const Login: React.FC<{ onSuccess: () => void }> = (props) => {
       </Form.Item>
 
       <Form.Item
-        // label="密码"
+        label="密码"
         name="password"
         rules={[{required: true}]}
       >

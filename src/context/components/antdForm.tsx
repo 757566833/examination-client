@@ -9,13 +9,13 @@ export const antdProvider:ConfigProviderProps ={
       required: '${label}不能为空',
     },
   },
-  getPopupContainer: (node)=>{
-    console.log(node);
-    if (node&&node.parentElement) {
-      return node.parentElement;
-    }
-    return document.body;
-  },
+  // getPopupContainer: (node)=>{
+  //   console.log(node);
+  //   if (node&&node.parentElement) {
+  //     return node.parentElement;
+  //   }
+  //   return document.body;
+  // },
   dropdownMatchSelectWidth: true,
   locale: zhCN,
 

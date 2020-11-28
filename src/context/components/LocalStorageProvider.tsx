@@ -1,9 +1,23 @@
 import React, {Dispatch, useReducer} from 'react';
-export const localStorageReducer = (state: { [key: string]: string }, action: { [key: string]: string }) => {
-  return {...state, ...action};
+
+type IAction = {
+  type: 'add',
+  value: { [key: string]: string }
+} | {
+  type: 'remove',
+  key: string
+}
+export const localStorageReducer: (state: { [key: string]: string }, action: IAction) => { [key: string]: string } = (state, action) => {
+  if (action.type == 'add') {
+    return {...state, ...action.value};
+  } else {
+    const nextState = {...state};
+    delete nextState[action.key];
+    return nextState;
+  }
 };
 export const localStorageDefaultValue: { [key: string]: string } = JSON.parse(JSON.stringify(localStorage));
-export const LocalStorageContext = React.createContext<{ state: { [key: string]: string }, dispatch: Dispatch<{ [key: string]: string }> }>({
+export const LocalStorageContext = React.createContext<{ state: { [key: string]: string }, dispatch: Dispatch<IAction> }>({
   state: {}, dispatch: () => {
     //
   },
