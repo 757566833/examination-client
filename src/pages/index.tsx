@@ -13,10 +13,12 @@ import {
 } from '@ant-design/icons';
 import ReactLogo from '@/asset/react.svg';
 import styles from './index.less';
-import {
-  useScroll,
-  // useEffectOnce
-} from '@/hooks/common';
+// import {
+//   useScroll,
+//   // useEffectOnce
+// } from '@/hooks/common';
+import {getColumnList, IColumn} from '@/service/note';
+import {useEffectOnce} from '@/hooks/common';
 
 
 const {Title, Paragraph} = Typography;
@@ -96,10 +98,18 @@ const Index: React.FC = () => {
 export default Index;
 const ClassificationList: React.FC = () => {
   const body: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
-  const {x, y} = useScroll(body);
-  useEffect(() => {
-    console.log('scroll', x, y);
-  }, [x, y]);
+  const [columns, setColumns] = useState<IColumn[]>([]);
+  const getColumns = async () => {
+    const res = await getColumnList();
+    setColumns(res?.text.data || []);
+  };
+  useEffectOnce(() => {
+    getColumns().then();
+  });
+  // const {x, y} = useScroll(body);
+  // useEffect(() => {
+  //   console.log('scroll', x, y);
+  // }, [x, y]);
   const [selected, setSelected] = useState<number>();
   const [detail, setDetail] = useState<number>();
   const onCardClick = (e: React.SyntheticEvent<HTMLElement>) => {
@@ -155,7 +165,7 @@ const ClassificationList: React.FC = () => {
       <h3> In the process of internal desktop applications development</h3>
     </div>
     <div className={styles.row}>
-      {test.map((item, index) => {
+      {columns.map((item, index) => {
         let css: React.CSSProperties = {
           width: index == selected ? 552 : 252,
           height: index == selected ? 588 : 285,

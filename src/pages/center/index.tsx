@@ -1,12 +1,12 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import ScrollList from '@/components/composite/scrollList/ScrollList';
 import styles from './index.less';
 import {Button} from 'antd';
-import {getList} from '@/service/elastic';
-import {INote} from '@/service/elastic';
+import {getList} from '@/service/note';
+import {INote} from '@/service/note';
 import {useHistory} from 'react-router';
 import {useSocket} from '@/hooks/notHook/webSocket';
-import Http from '@/http';
+
 
 const listData: any = [];
 for (let i = 0; i < 23; i++) {
