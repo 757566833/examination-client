@@ -12,11 +12,13 @@ import Layout from "@/layouts";
 import '@/global'
 import '@/global.less'
 
-import Component0 from "@/pages/center/index";
+import Component0 from "@/pages/admin/index";
 
-import Component1 from "@/pages/index";
+import Component1 from "@/pages/center/index";
 
-import Component2 from "@/pages/note/create/index";
+import Component2 from "@/pages/index";
+
+import Component3 from "@/pages/note/create/index";
 
 const AppRouter: React.FC = () => {
     return (
@@ -26,11 +28,13 @@ const AppRouter: React.FC = () => {
                     <Switch>
 
 
-                      <Route path="/center" exact={true} component={Component0} />
+                      <Route path="/admin" exact={true} component={Component0} />
 
-                      <Route path="/" exact={true} component={Component1} />
+                      <Route path="/center" exact={true} component={Component1} />
 
-                      <Route path="/note/create" exact={true} component={Component2} />
+                      <Route path="/" exact={true} component={Component2} />
+
+                      <Route path="/note/create" exact={true} component={Component3} />
 
                     </Switch>
                 </Layout>

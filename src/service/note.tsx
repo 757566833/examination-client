@@ -42,7 +42,7 @@ export const getById = (id: string) => {
  * 文章分类的属性，会出现在主页
  */
 export interface IColumn {
-  cid: string,
+  cid?: string,
   title: string,
   description: string,
   img: string,
@@ -52,4 +52,20 @@ export interface IColumn {
 export const getColumnList = () => {
   const url = `/note/column/list`;
   return Http.get<IResponse<IColumn[]>>(url);
+};
+export const getColumnById = (id: string) => {
+  const url = `/note/column/id/${id}`;
+  return Http.get<IResponse<IColumn[]>>(url);
+};
+export const addColumn = (column: IColumn) => {
+  const url = `/note/column/add`;
+  return Http.post<IResponse<IColumn[]>>(url, column);
+};
+export const patchColumn = (column: IColumn) => {
+  const url = `/note/column/add`;
+  return Http.patch<IResponse<IColumn[]>>(url, column);
+};
+export const delColumn = (id: string) => {
+  const url = `/note/column/add`;
+  return Http.delete<IResponse<IColumn[]>>(url, {cid: id});
 };
