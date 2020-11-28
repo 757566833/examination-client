@@ -6,7 +6,8 @@ import {
   DragOutlined,
   LineOutlined,
   DeleteOutlined,
-  SaveOutlined,
+  DownloadOutlined,
+  UploadOutlined,
 } from '@ant-design/icons';
 import styles from './ToolsBar.less';
 import Nodes from './components/Nodes';
@@ -31,6 +32,8 @@ interface IToolsBarProps {
   onLabelChange: (value: string) => void
   onEdgeChange: (value: 'horizontal' | 'vertical') => void
   onDelete: () => void
+  onUpload: () => void
+  onDownload: () => void
 }
 
 const ToolsBar: React.FC<IToolsBarProps> = (props) => {
@@ -69,10 +72,13 @@ const ToolsBar: React.FC<IToolsBarProps> = (props) => {
       /></>}
 
 
-    <Divider type='vertical'/>
-    {props.selected && <Button size={'small'} onClick={props.onDelete}>
+    {props.selected && <><Divider type='vertical'/><Button size={'small'} onClick={props.onDelete}>
       <DeleteOutlined/>
-    </Button>}
+    </Button></>}
+    <Divider type='vertical'/>
+    <Button size='small' onClick={props.onDownload}><DownloadOutlined/></Button>
+    <Divider type='vertical'/>
+    <Button size='small' onClick={props.onUpload}><UploadOutlined/></Button>
     <div className={'width_24'}/>
   </div>;
 };

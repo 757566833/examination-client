@@ -19,7 +19,6 @@ try {
 const filesList: string[] = [];
 readFileList('./src/pages', filesList);
 console.log(filesList);
-console.log(process.env.mode);
 let str = `
 import React from "react";
 import {

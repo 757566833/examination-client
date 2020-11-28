@@ -2,7 +2,7 @@ import {EButtonName, IButtonCollection} from '../ToolsBar';
 
 
 const toolsBarExecCommand = (params: { name: IButtonCollection, text: string } | { name: EButtonName.字体颜色, text: string, value: string }) => {
-  console.log('toolsBarExecCommand');
+  // console.log('toolsBarExecCommand');
   // debugger;
   switch (params.name) {
     case EButtonName.后退:
@@ -12,7 +12,7 @@ const toolsBarExecCommand = (params: { name: IButtonCollection, text: string } |
       document.execCommand('redo', false);
       break;
     case EButtonName.一级标题:
-      console.log('一级标题');
+      // console.log('一级标题');
       document.execCommand('insertText', false, `\n  # ${params.text} \n`);
       break;
     case EButtonName.二级标题:

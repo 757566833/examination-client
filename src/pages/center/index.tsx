@@ -1,10 +1,12 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import ScrollList from '@/components/composite/scrollList/ScrollList';
 import styles from './index.less';
 import {Button} from 'antd';
 import {getList} from '@/service/elastic';
 import {INote} from '@/service/elastic';
 import {useHistory} from 'react-router';
+import {useSocket} from '@/hooks/notHook/webSocket';
+import Http from '@/http';
 
 const listData: any = [];
 for (let i = 0; i < 23; i++) {
@@ -25,6 +27,13 @@ const Center: React.FC = () => {
     his.push('/note/create');
   };
 
+  const [socket] = useSocket();
+  socket.on('connect', () => {
+    console.log('socket.id:' + socket.id);
+  });
+  socket.on('login', (data: any) => {
+    console.log('login' + data?.token);
+  });
 
   return <div className={`${styles.center} flex`}>
 
@@ -35,6 +44,7 @@ const Center: React.FC = () => {
       <div className={styles.panel}>
         <div><Button type="primary" onClick={goCreate}>写文章</Button></div>
       </div>
+
     </div>
   </div>;
 };

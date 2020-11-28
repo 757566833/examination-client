@@ -56,7 +56,7 @@ export interface IToolsBar {
 
 const ToolsBar: React.FC<IToolsBar> = (props) => {
   const onClick = (name:IButtonCollection) => {
-    console.log('ToolsBar');
+    // console.log('ToolsBar');
     props.onClick({name: name});
   };
   const onColor = (name: EButtonName.字体颜色, value: string) => {

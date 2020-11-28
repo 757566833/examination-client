@@ -54,7 +54,7 @@ export const developmentConfig: webpack.Configuration = {
       template: path.resolve(__dirname, 'template.dev.html'),
     }),
     new webpack.DefinePlugin({
-      apiUrl: JSON.stringify('//127.0.0.1:9000'),
+      mode: JSON.stringify('dev'),
     }),
   ],
   resolve: {

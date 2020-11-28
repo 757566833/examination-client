@@ -15,10 +15,8 @@ export const useDocumentSelect: (defaultCtrl?: boolean) => [(ctrl: boolean) => v
   }
   const ctrl: (ctrl: boolean) => void = (ctrl) => {
     if (ctrl) {
-      console.log('打开');
       document.onselectstart = open;
     } else {
-      console.log('关闭');
       document.onselectstart = stop;
     }
   };

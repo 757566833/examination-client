@@ -7,7 +7,6 @@ import {sendEmail} from '@/service/mail';
 import {CountDown} from '@/components/custom/countDown/CountDown';
 import {register} from '@/service/auth';
 import {useLocalStorage} from '@/hooks/context';
-import {IResponse} from '@/http';
 
 const span0 = {
   span: 0,
@@ -90,7 +89,7 @@ const Register: React.FC<{ onSuccess: () => void }> = (props) => {
         <Form.Item
           className={styles.form_item_inline_block}
         >
-          <Button loading={codeFetching} className="max_width" onClick={getCode}>
+          <Button loading={codeFetching} disabled={isCountDown} className="max_width" onClick={getCode}>
             {isCountDown ? <>重新发送验证码 <CountDown onFinish={countDownFinish}/></> : '发送验证码'}
           </Button>
         </Form.Item>

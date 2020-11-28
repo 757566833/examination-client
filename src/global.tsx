@@ -7,4 +7,5 @@ moment.locale('zh-cn');
 import '@/asset/markdown/iconfont';
 import '@/asset/antv/iconfont';
 import 'github-markdown-css/github-markdown.css';
-console.log('global');
+
+

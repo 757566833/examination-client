@@ -3,7 +3,8 @@ import styles from './index.less';
 import Logo from '@/asset/logo.svg';
 import Search from './components/Search';
 import UserCenter from './components/UserCenter';
-const name = ['一', '谷', '科', '技'];
+
+const name = ['f', 'z', 'c', 'o', 'd', 'e'];
 const Header: React.FC = () => {
   return <div className={`${styles.header} flex animate__animated animate__fadeInRightSmall`}>
     <div className="flex">
@@ -15,6 +16,7 @@ const Header: React.FC = () => {
       <Search/>
     </div>
     <div>
+
       <UserCenter/>
     </div>
   </div>;

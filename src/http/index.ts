@@ -1,4 +1,5 @@
 import {message, Modal} from 'antd';
+import {httpUrl} from '@/config/url';
 
 /**
  *
@@ -39,7 +40,8 @@ const getRequestInit: (
       ...headers,
     };
     if (localStorage.token) {
-      allHeaders['Authorization'] = `Bearer ${localStorage.token}`;
+      allHeaders['Authorization'] = `${localStorage.token}`;
+      // allHeaders['Authorization'] = `Bearer ${localStorage.token}`;
     }
     // const requestInit: RequestInit =
 
@@ -81,7 +83,7 @@ export const logoutWarning = () => {
 const httpFetch: IHttpFetch = async <R>(requestUrl: string, requestInit: RequestInit) => {
   let url = requestUrl;
   if (!requestUrl.includes('http')) {
-    url = apiUrl + requestUrl;
+    url = httpUrl + requestUrl;
   }
   const response: Response = await fetch(url, requestInit);
   if (response.status >= 200 && response.status < 300) {

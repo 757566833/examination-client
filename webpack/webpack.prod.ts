@@ -5,6 +5,8 @@ import AssetsPlugin from 'assets-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import {CleanWebpackPlugin} from 'clean-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import CompressionPlugin from 'compression-webpack-plugin';
+
 
 export const productionConfig: webpack.Configuration = {
   entry: {
@@ -40,8 +42,9 @@ export const productionConfig: webpack.Configuration = {
       template: path.resolve(__dirname, 'template.prod.html'),
     }),
     new webpack.DefinePlugin({
-      apiUrl: JSON.stringify('//127.0.0.1:9000'),
+      mode: JSON.stringify('prod'),
     }),
+    new CompressionPlugin(),
   ],
 };
 

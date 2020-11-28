@@ -5,9 +5,12 @@ import {ENode} from './components/components/Nodes';
 import {beanNode} from '@/components/extended/g6Editor/bean';
 import {IG6GraphEvent} from '@antv/g6/lib/types';
 import {Item} from '@antv/g6/lib/types';
+import {Button} from 'antd';
+import {base64Upload} from '@/service/file';
 
 
 const G6Editor: React.FC<{ width: number, height: number }> = (props) => {
+  console.log(props.width, props.height);
   const ref = useRef<HTMLDivElement>(null);
   let addedCount = 0;
   // // Register a custom behavior: add a node when user click the blank part of canvas
@@ -33,9 +36,6 @@ const G6Editor: React.FC<{ width: number, height: number }> = (props) => {
       };
     },
     onNodeClick(e: any) {
-      console.log(e);
-      const aaa: any = window;
-      aaa.tttt = e;
       setSelected({
         type: 'edge',
         value: e.item.getModel().label,
@@ -84,8 +84,8 @@ const G6Editor: React.FC<{ width: number, height: number }> = (props) => {
     if (ref.current && graph.current == null) {
       graph.current = new G6.Graph({
         container: ref.current,
-        width: props.width,
-        height: props.height,
+        width: props.width - 26,
+        height: props.height - 40,
         linkCenter: false,
         renderer: 'svg',
         enabledStack: true,
@@ -228,6 +228,18 @@ const G6Editor: React.FC<{ width: number, height: number }> = (props) => {
     );
     addedCount++;
   };
+  const upload = async () => {
+    const base64 = graph.current?.toDataURL();
+    if (base64) {
+      const res = await base64Upload(base64);
+      if (res) {
+        console.log(res);
+      }
+    }
+  };
+  const download = () => {
+    graph.current?.downloadImage();
+  };
   return <div>
     <ToolsBar
       active={active}
@@ -236,9 +248,12 @@ const G6Editor: React.FC<{ width: number, height: number }> = (props) => {
       onLabelChange={onLabelChange}
       onEdgeChange={onEdgeChange}
       onDelete={onDelete}
+      onUpload={upload}
+      onDownload={download}
     />
-    {/* <Button onClick={()=>graph.current?.downloadImage()}>导出</Button>*/}
+
     <div ref={ref} onDrop={onDragEnd}/>
+    <Button onClick={() => console.log(graph.current?.toDataURL())}>导出</Button>
   </div>;
 };
 export default G6Editor;

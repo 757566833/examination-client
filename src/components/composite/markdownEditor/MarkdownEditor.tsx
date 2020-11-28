@@ -20,11 +20,11 @@ const MarkdownEditor: React.FC = () => {
   };
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const onClick = (params: IToolsClickParams) => {
-    console.log('params', params);
+    // console.log('params', params);
     const start = inputRef.current?.selectionStart;
     const end = inputRef.current?.selectionEnd;
     // const text = inputRef.current.se;
-    console.log(end, start);
+    // console.log(end, start);
     if (typeof start == 'number' && typeof end == 'number' && end > start) {
       if (params.name == EButtonName.字体颜色) {
         toolsBarExecCommand({name: params.name, text: text.slice(start, end), value: params.value});
@@ -32,7 +32,7 @@ const MarkdownEditor: React.FC = () => {
         // console.log('dsadsa');
         // toolsBarExecCommand({name: params.name, text: text.slice(start, end)});
       } else {
-        console.log('dsadsa');
+        // console.log('dsadsa');
         toolsBarExecCommand({name: params.name, text: text.slice(start, end)});
       }
     }

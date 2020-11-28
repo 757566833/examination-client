@@ -11,19 +11,16 @@ import {
 import {
   CloseOutlined,
 } from '@ant-design/icons';
-
-import Logo from '@/asset/logo.svg';
 import ReactLogo from '@/asset/react.svg';
 import styles from './index.less';
 import {
   useScroll,
   // useEffectOnce
 } from '@/hooks/common';
-import UserCenter from '@/pages/components/UserCenter';
-import Search from '@/pages/components/Search';
+
 
 const {Title, Paragraph} = Typography;
-const name = ['一', '谷', '科', '技'];
+
 const test = [{
   title: '板块1',
   description: '板块1备注',
@@ -87,23 +84,10 @@ const rol = (index: number) => {
 const Index: React.FC = () => {
   return (
     <>
-      {/* <div className={`${styles.header} flex animate__animated animate__fadeInRightSmall`}>*/}
-      {/*  <div className="flex">*/}
-      {/*    <img className={styles.logo} src={Logo}/>*/}
-      {/*    <div className={`${styles.text} flex`}>*/}
-      {/*      {name.map((item, index) => <div key={index}>{item}</div>)}*/}
-      {/*    </div>*/}
-      {/*    <div className={'width_12'}/>*/}
-      {/*    <Search/>*/}
-      {/*  </div>*/}
-      {/*  <div>*/}
-      {/*    <UserCenter/>*/}
-      {/*  </div>*/}
-      {/* </div>*/}
       <ClassificationList/>
       <div className={`${styles.footer} animate__animated animate__fadeInRightSmall flex`}>
         <div className={`${styles.text} `}>
-          123
+          footer
         </div>
       </div>
     </>
