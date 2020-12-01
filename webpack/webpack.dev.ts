@@ -35,8 +35,11 @@ export const developmentConfig: webpack.Configuration = {
       'Access-Control-Allow-Origin': '*',
     },
   },
+  optimization: {
+    namedModules: true,
+  },
   plugins: [
-    new ErrorOverlayPlugin(),
+    // new ErrorOverlayPlugin(),
     new webpack.HotModuleReplacementPlugin({
       // Options...
     }),
@@ -44,7 +47,7 @@ export const developmentConfig: webpack.Configuration = {
       filename: 'assets.json',
       path: path.join(__dirname, '..', 'dist', 'public'),
     }),
-    new webpack.NamedModulesPlugin(),
+    // new webpack.NamedModulesPlugin(),
     new ForkTsCheckerWebpackPlugin(),
     new MiniCssExtractPlugin({
       filename: 'public/[name].[contenthash].css',
@@ -83,6 +86,7 @@ export const developmentHotConfig = {
             plugins: [
               ['@babel/plugin-proposal-decorators', {legacy: true}],
               ['@babel/plugin-proposal-class-properties', {loose: true}],
+              ['@babel/plugin-transform-react-jsx-source'],
               ['import', {'libraryName': 'antd', 'style': true}, 'antd'],
               [
                 'babel-plugin-styled-components',

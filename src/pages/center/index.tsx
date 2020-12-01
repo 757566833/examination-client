@@ -1,5 +1,6 @@
 import React from 'react';
 import ScrollList from '@/components/composite/scrollList/ScrollList';
+import UploadSingleImgWithCrop from '@/components/composite/upload/UploadSingleImgWithCrop';
 import styles from './index.less';
 import {Button} from 'antd';
 import {getList} from '@/service/note';
@@ -44,7 +45,7 @@ const Center: React.FC = () => {
       <div className={styles.panel}>
         <div><Button type="primary" onClick={goCreate}>写文章</Button></div>
       </div>
-
+      <UploadSingleImgWithCrop/>
     </div>
   </div>;
 };

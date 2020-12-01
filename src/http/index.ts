@@ -1,4 +1,4 @@
-import {message, Modal} from 'antd';
+import {Modal} from 'antd';
 import {httpUrl} from '@/config/url';
 
 /**
@@ -29,28 +29,41 @@ function getErrorMessage(statusCode: number): string | undefined {
   return statusMsgMap[statusCode];
 }
 
-const getRequestInit: (
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH',
-  headers?: { [key: string]: string | number },
-  body?: any) => RequestInit =
-  (method, headers, body) => {
-    const allHeaders: HeadersInit = {
-      'Content-Type': 'application/json; charset=UTF-8',
-      // 'Authorization': `Bearer ${localStorage.token}`,
-      ...headers,
-    };
-    if (localStorage.token) {
-      allHeaders['Authorization'] = `${localStorage.token}`;
-      // allHeaders['Authorization'] = `Bearer ${localStorage.token}`;
-    }
-    // const requestInit: RequestInit =
-
+const getRequestInit: (method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH', headers?: { [key: string]: string | number }, body?: any) => RequestInit = (method, headers, body) => {
+  const allHeaders: HeadersInit = {
+    'Content-Type': 'application/json; charset=UTF-8',
+    // 'Authorization': `Bearer ${localStorage.token}`,
+    ...headers,
+  };
+  if (localStorage.token) {
+    allHeaders['Authorization'] = `${localStorage.token}`;
+    // allHeaders['Authorization'] = `Bearer ${localStorage.token}`;
+  }
+  if (method == 'GET') {
     return {
       method: method,
       headers: allHeaders,
-      body: JSON.stringify(body),
+      // body: JSON.stringify(body),
     };
+  }
+  return {
+    method: method,
+    headers: allHeaders,
+    body: JSON.stringify(body),
   };
+};
+const getRequestFormInit: (method: 'POST' | 'PUT' | 'DELETE' | 'PATCH', body: FormData) => RequestInit = (method, body) => {
+  const allHeaders: HeadersInit = {};
+  if (localStorage.token) {
+    allHeaders['Authorization'] = `${localStorage.token}`;
+    // allHeaders['Authorization'] = `Bearer ${localStorage.token}`;
+  }
+  return {
+    method: method,
+    headers: allHeaders,
+    body: body,
+  };
+};
 
 export interface IResponse<T> {
   code: number,
@@ -58,15 +71,24 @@ export interface IResponse<T> {
   message: string
 }
 
+export type IFetchReqHeader = { [key: string]: string | number }
+export type IHttpGet = <R>(url: string, parameter?: { [key: string]: number | string }, headers?: IFetchReqHeader) => Promise<{ headers: Headers, text: R }>
+export type IHttpPost = <R>(url: string, parameter?: { [key: string]: any }, headers?: IFetchReqHeader) => Promise<{ headers: Headers, text: R }>
+export type IHttpPostFrom = <R>(url: string, parameter: FormData, headers?: IFetchReqHeader) => Promise<{ headers: Headers, text: R }>
+export type IHttpPut = <R>(url: string, parameter?: { [key: string]: any }, headers?: IFetchReqHeader) => Promise<{ headers: Headers, text: R }>
+export type IHttpPatch = <R>(url: string, parameter?: { [key: string]: any }, headers?: IFetchReqHeader) => Promise<{ headers: Headers, text: R }>
+export type IHttpDelete = <R>(url: string, parameter?: { [key: string]: any }, headers?: IFetchReqHeader) => Promise<{ headers: Headers, text: R }>
+
 export interface IHttp {
-  get: <R>(url: string, parameter?: { [key: string]: number | string }, headers?: { [key: string]: string | number }) => Promise<{ headers: Headers, text: R } | undefined>,
-  post: <R>(url: string, parameter: { [key: string]: any }, headers?: { [key: string]: string | number }) => Promise<{ headers: Headers, text: R } | undefined>,
-  put: <R>(url: string, parameter: { [key: string]: any }, headers?: { [key: string]: string | number }) => Promise<{ headers: Headers, text: R } | undefined>,
-  patch: <R>(url: string, parameter: { [key: string]: any }, headers?: { [key: string]: string | number }) => Promise<{ headers: Headers, text: R } | undefined>,
-  delete: <R>(url: string, parameter?: { [key: string]: any }, headers?: { [key: string]: string | number }) => Promise<{ headers: Headers, text: R } | undefined>,
+  get: <R>(url: string, parameter?: { [key: string]: number | string }, headers?: { [key: string]: string | number }) => Promise<{ headers: Headers, text: R }>,
+  post: <R>(url: string, parameter: { [key: string]: any }, headers?: { [key: string]: string | number }) => Promise<{ headers: Headers, text: R }>,
+  postForm: <R>(url: string, parameter: FormData) => Promise<{ headers: Headers, text: R }>,
+  put: <R>(url: string, parameter: { [key: string]: any }, headers?: { [key: string]: string | number }) => Promise<{ headers: Headers, text: R }>,
+  patch: <R>(url: string, parameter: { [key: string]: any }, headers?: { [key: string]: string | number }) => Promise<{ headers: Headers, text: R }>,
+  delete: <R>(url: string, parameter?: { [key: string]: any }, headers?: { [key: string]: string | number }) => Promise<{ headers: Headers, text: R }>,
 }
 
-export type IHttpFetch = <R>(requestUrl: string, requestInit: RequestInit) => Promise<{ headers: Headers, text: R } | undefined>
+export type IHttpFetch = <R>(requestUrl: string, requestInit: RequestInit) => Promise<{ headers: Headers, text: R }>
 
 export const logout = () => {
   localStorage.removeItem('token');
@@ -80,6 +102,7 @@ export const logoutWarning = () => {
     },
   });
 };
+let logoutWarn: ReturnType<typeof Modal.warning> | undefined = undefined;
 const httpFetch: IHttpFetch = async <R>(requestUrl: string, requestInit: RequestInit) => {
   let url = requestUrl;
   if (!requestUrl.includes('http')) {
@@ -101,11 +124,24 @@ const httpFetch: IHttpFetch = async <R>(requestUrl: string, requestInit: Request
     };
     return res;
   } else if (response.status == 401) {
-    logoutWarning();
-    return undefined;
+    if (logoutWarn != undefined) {
+      logoutWarn = Modal.warning({
+        content: await response.text(),
+        // content: '登录超时请重新登录！',
+        okText: '确认',
+        onOk: () => {
+          localStorage.removeItem('token');
+          // const revertUrl = encodeURIComponent(location.href);
+          location.href = `/`;
+        },
+      });
+    }
+    throw new Error(getErrorMessage(response.status));
+    // return undefined;
   } else {
-    message.error(getErrorMessage(response.status));
-    return undefined;
+    throw new Error(getErrorMessage(response.status));
+    // message.error();
+    // return undefined;
   }
 };
 export const Http: IHttp = {
@@ -121,27 +157,32 @@ export const Http: IHttp = {
     parameterStr = parameterStr.substr(0, parameterStr.length - 1);
     const requestUrl = url + parameterStr;
     const requestInit: RequestInit = getRequestInit('GET', headers);
-    const result: { headers: Headers, text: R } | undefined = await httpFetch<R>(requestUrl, requestInit);
+    const result: { headers: Headers, text: R } = await httpFetch<R>(requestUrl, requestInit);
     return result;
   },
   post: async <R>(url: string, parameter: { [key: string]: number | string }, headers?: { [key: string]: string | number }) => {
     const requestInit: RequestInit = getRequestInit('POST', headers, parameter);
-    const result: { headers: Headers, text: R } | undefined = await httpFetch<R>(url, requestInit);
+    const result: { headers: Headers, text: R } = await httpFetch<R>(url, requestInit);
+    return result;
+  },
+  postForm: async <R>(url: string, parameter: FormData) => {
+    const requestInit: RequestInit = getRequestFormInit('POST', parameter);
+    const result: { headers: Headers, text: R } = await httpFetch<R>(url, requestInit);
     return result;
   },
   put: async <R>(url: string, parameter: { [key: string]: number | string }, headers?: { [key: string]: string | number }) => {
     const requestInit: RequestInit = getRequestInit('PUT', headers, parameter);
-    const result: { headers: Headers, text: R } | undefined = await httpFetch<R>(url, requestInit);
+    const result: { headers: Headers, text: R } = await httpFetch<R>(url, requestInit);
     return result;
   },
   patch: async <R>(url: string, parameter: { [key: string]: number | string }, headers?: { [key: string]: string | number }) => {
     const requestInit: RequestInit = getRequestInit('PATCH', headers, parameter);
-    const result: { headers: Headers, text: R } | undefined = await httpFetch<R>(url, requestInit);
+    const result: { headers: Headers, text: R } = await httpFetch<R>(url, requestInit);
     return result;
   },
   delete: async <R>(url: string, parameter?: { [key: string]: number | string }, headers?: { [key: string]: string | number }) => {
     const requestInit: RequestInit = getRequestInit('DELETE', headers, parameter);
-    const result: { headers: Headers, text: R } | undefined = await httpFetch<R>(url, requestInit);
+    const result: { headers: Headers, text: R } = await httpFetch<R>(url, requestInit);
     return result;
   },
 };

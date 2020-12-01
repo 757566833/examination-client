@@ -8,4 +8,6 @@ import '@/asset/markdown/iconfont';
 import '@/asset/antv/iconfont';
 import 'github-markdown-css/github-markdown.css';
 
+import 'react-image-crop/dist/ReactCrop.css';
+
 
