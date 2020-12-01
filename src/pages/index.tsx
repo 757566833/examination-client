@@ -242,6 +242,8 @@ const ClassificationList: React.FC = () => {
             <div
               className={`${styles.cover} itemAnimateCover${index} flex`}
               style={{
+                left: index == selected ? 0 : 33,
+                right: index == selected ? 0 : 33,
                 bottom: index == selected ? 0 : 100,
               }}
             >
@@ -249,6 +251,7 @@ const ClassificationList: React.FC = () => {
                 className={styles.img}
                 alt="example"
                 src={item.img}
+                // width={183}
               />
 
             </div>
