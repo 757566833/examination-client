@@ -5,23 +5,20 @@ import {Button, Input, message, List, Modal, Form} from 'antd';
 import {FormInstance} from 'antd/es/form';
 import UploadSingleImg from '@/components/extended/upload/UploadSingleImg';
 import styles from './index.less';
+import {useLoadingWithGet} from '@/hooks/common/loading';
+import UploadSingleImgWithCrop from '@/components/composite/upload/UploadSingleImgWithCrop';
 
 const layout = {
   labelCol: {span: 4},
   wrapperCol: {span: 20},
 };
+const getColumnParams = {};
 const Admin: React.FC = () => {
-  const [columns, setColumns] = useState<IColumn[]>([]);
+  // const [columns, setColumns] = useState<IColumn[]>([]);
   const [selected, setSelected] = useState<string | undefined>(undefined);
   const [form] = Form.useForm<IAddColumn>();
   const [visible, setVisible] = useState(false);
-  const getColumns = async () => {
-    const res = await getColumnList();
-    setColumns(res.text.data);
-  };
-  useEffectOnce(() => {
-    getColumns().then();
-  });
+  const [columns, loading, reloadColumns] = useLoadingWithGet<IColumn[]>(getColumnList, getColumnParams, []);
   const onFinish = async () => {
     await form.validateFields();
     console.log(form.getFieldsValue());
@@ -29,7 +26,7 @@ const Admin: React.FC = () => {
     if (res) {
       setVisible(false);
       message.success('创建成功');
-      await getColumns();
+      await reloadColumns();
     }
   };
   const onOpen = () => {
@@ -49,6 +46,7 @@ const Admin: React.FC = () => {
       <Add form={form}/>
     </Modal>
     <List
+      loading={loading}
       itemLayout="vertical"
       size="large"
       className={styles.list}
@@ -58,7 +56,7 @@ const Admin: React.FC = () => {
       pagination={false}
       dataSource={columns}
       renderItem={(item) => (
-        <ListItem item={item} onSelected={setSelected} selected={selected || ''} reload={getColumns}/>
+        <ListItem item={item} onSelected={setSelected} selected={selected || ''} reload={reloadColumns}/>
       )}
     />
   </div>;
@@ -78,6 +76,7 @@ const ListItem: React.FC<{ item: IColumn, selected: string, onSelected: (cid: st
   const item = props.item;
   const onSave = () => {
     props.onSelected(undefined);
+    props.reload();
   };
   return props.selected == item.cid ? <ListItemEdit column={item} onSave={onSave} onCancel={onCancel}/> :
     <ListItemDetail column={item} actions={CommonActions}/>;
@@ -88,7 +87,7 @@ const ListItemDetail: React.FC<{ column: IColumn, actions: React.ReactNode[] }> 
     key={props.column.cid}
     extra={
       <img
-        width={272}
+        width={224}
         alt="logo"
         src={props.column.img}
       />
@@ -129,6 +128,7 @@ const ListItemEdit: React.FC<{ column: IColumn, onSave: () => void, onCancel: ()
     });
   });
   const onUpload = (url: string) => {
+    console.log('url', url);
     form.setFieldsValue({
       img: url,
     });
@@ -140,8 +140,8 @@ const ListItemEdit: React.FC<{ column: IColumn, onSave: () => void, onCancel: ()
     key={props.column.cid}
     extra={
       // <UploadSingleImg >
-      <Form.Item name='img' >
-        <UploadSingleImg onChange={onUpload}>
+      <Form.Item name='img'>
+        <UploadSingleImgWithCrop onChange={onUpload}>
           <Form.Item
             noStyle={true}
             shouldUpdate={(prevValues, currentValues) => prevValues.img !== currentValues.img}
@@ -151,16 +151,9 @@ const ListItemEdit: React.FC<{ column: IColumn, onSave: () => void, onCancel: ()
             }}
           </Form.Item>
 
-        </UploadSingleImg>
+        </UploadSingleImgWithCrop>
 
       </Form.Item>
-
-      // </UploadSingleImg>
-      // <img
-      // // width={272}
-      // alt="logo"
-      // src={props.column.img}
-      // />
     }
     actions={[
       <Form.Item key='save'><Button size='small' htmlType="submit" type="primary">保存</Button></Form.Item>,

@@ -43,7 +43,7 @@ const UploadSingleImg: React.FC<IUploadSingleImg> = (props) => {
     modalOk="确定"
     modalCancel="取消"
     modalTitle={'截取图片'}
-    aspect={272}
+    aspect={224}
   >
     <Upload {...uploadProps}>
       {props.children ? props.children : <Button loading={loading} size='small' icon={<UploadOutlined/>}></Button>}

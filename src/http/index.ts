@@ -72,35 +72,28 @@ export interface IResponse<T> {
 }
 
 export type IFetchReqHeader = { [key: string]: string | number }
-export type IHttpGet = <R>(url: string, parameter?: { [key: string]: number | string }, headers?: IFetchReqHeader) => Promise<{ headers: Headers, text: R }>
-export type IHttpPost = <R>(url: string, parameter?: { [key: string]: any }, headers?: IFetchReqHeader) => Promise<{ headers: Headers, text: R }>
-export type IHttpPostFrom = <R>(url: string, parameter: FormData, headers?: IFetchReqHeader) => Promise<{ headers: Headers, text: R }>
-export type IHttpPut = <R>(url: string, parameter?: { [key: string]: any }, headers?: IFetchReqHeader) => Promise<{ headers: Headers, text: R }>
-export type IHttpPatch = <R>(url: string, parameter?: { [key: string]: any }, headers?: IFetchReqHeader) => Promise<{ headers: Headers, text: R }>
-export type IHttpDelete = <R>(url: string, parameter?: { [key: string]: any }, headers?: IFetchReqHeader) => Promise<{ headers: Headers, text: R }>
+export type IFetchRes<R> = { headers: Headers, text: R, status: number }
+export type IHttpGet = <R>(url: string, parameter?: { [key: string]: any }, headers?: IFetchReqHeader) => Promise<IFetchRes<R>>
+export type IHttpPost = <R>(url: string, parameter?: { [key: string]: any }, headers?: IFetchReqHeader) => Promise<IFetchRes<R>>
+export type IHttpPostFrom = <R>(url: string, parameter: FormData, headers?: undefined) => Promise<IFetchRes<R>>
+export type IHttpPut = <R>(url: string, parameter?: { [key: string]: any }, headers?: IFetchReqHeader) => Promise<IFetchRes<R>>
+export type IHttpPatch = <R>(url: string, parameter?: { [key: string]: any }, headers?: IFetchReqHeader) => Promise<IFetchRes<R>>
+export type IHttpDelete = <R>(url: string, parameter?: { [key: string]: any }, headers?: IFetchReqHeader) => Promise<IFetchRes<R>>
 
 export interface IHttp {
-  get: <R>(url: string, parameter?: { [key: string]: number | string }, headers?: { [key: string]: string | number }) => Promise<{ headers: Headers, text: R }>,
-  post: <R>(url: string, parameter: { [key: string]: any }, headers?: { [key: string]: string | number }) => Promise<{ headers: Headers, text: R }>,
-  postForm: <R>(url: string, parameter: FormData) => Promise<{ headers: Headers, text: R }>,
-  put: <R>(url: string, parameter: { [key: string]: any }, headers?: { [key: string]: string | number }) => Promise<{ headers: Headers, text: R }>,
-  patch: <R>(url: string, parameter: { [key: string]: any }, headers?: { [key: string]: string | number }) => Promise<{ headers: Headers, text: R }>,
-  delete: <R>(url: string, parameter?: { [key: string]: any }, headers?: { [key: string]: string | number }) => Promise<{ headers: Headers, text: R }>,
+  get: IHttpGet,
+  post: IHttpPost,
+  postForm: IHttpPostFrom,
+  put: IHttpPut,
+  patch: IHttpPatch,
+  delete: IHttpDelete,
 }
 
-export type IHttpFetch = <R>(requestUrl: string, requestInit: RequestInit) => Promise<{ headers: Headers, text: R }>
+export type IHttpFetch = <R>(requestUrl: string, requestInit: RequestInit) => Promise<IFetchRes<R>>
 
 export const logout = () => {
   localStorage.removeItem('token');
   window.location.href = '/';
-};
-export const logoutWarning = () => {
-  Modal.warning({
-    content: '您的账号已下线，请重新登录',
-    onOk: () => {
-      logout();
-    },
-  });
 };
 let logoutWarn: ReturnType<typeof Modal.warning> | undefined = undefined;
 const httpFetch: IHttpFetch = async <R>(requestUrl: string, requestInit: RequestInit) => {
@@ -109,16 +102,18 @@ const httpFetch: IHttpFetch = async <R>(requestUrl: string, requestInit: Request
     url = httpUrl + requestUrl;
   }
   const response: Response = await fetch(url, requestInit);
-  if (response.status >= 200 && response.status < 300) {
-    const headers: Headers = response.headers;
-    const responseStr = await response.text();
+  const headers: Headers = response.headers;
+  const status = response.status;
+  const responseStr = await response.text();
+  if (status >= 200 && status < 300) {
     let text: R;
     try {
       text = eval(`(${responseStr})`) as R;
     } catch (error) {
       text = responseStr as any;
     }
-    const res: { headers: Headers, text: R } = {
+    const res: { status: number, headers: Headers, text: R } = {
+      status,
       headers,
       text,
     };
@@ -136,12 +131,21 @@ const httpFetch: IHttpFetch = async <R>(requestUrl: string, requestInit: Request
         },
       });
     }
-    throw new Error(getErrorMessage(response.status));
-    // return undefined;
+    const res: { status: number, headers: Headers, text: R } = {
+      status,
+      headers,
+      text: getErrorMessage(response.status) as any,
+    };
+    return res;
+    // throw new Error(getErrorMessage(response.status));
+    // // return undefined;
   } else {
-    throw new Error(getErrorMessage(response.status));
-    // message.error();
-    // return undefined;
+    const res: { status: number, headers: Headers, text: R } = {
+      status,
+      headers,
+      text: getErrorMessage(response.status) as any,
+    };
+    return res;
   }
 };
 export const Http: IHttp = {
@@ -157,32 +161,32 @@ export const Http: IHttp = {
     parameterStr = parameterStr.substr(0, parameterStr.length - 1);
     const requestUrl = url + parameterStr;
     const requestInit: RequestInit = getRequestInit('GET', headers);
-    const result: { headers: Headers, text: R } = await httpFetch<R>(requestUrl, requestInit);
+    const result: IFetchRes<R> = await httpFetch<R>(requestUrl, requestInit);
     return result;
   },
-  post: async <R>(url: string, parameter: { [key: string]: number | string }, headers?: { [key: string]: string | number }) => {
+  post: async <R>(url: string, parameter?: { [key: string]: any }, headers?: { [key: string]: string | number }) => {
     const requestInit: RequestInit = getRequestInit('POST', headers, parameter);
-    const result: { headers: Headers, text: R } = await httpFetch<R>(url, requestInit);
+    const result: IFetchRes<R> = await httpFetch<R>(url, requestInit);
     return result;
   },
   postForm: async <R>(url: string, parameter: FormData) => {
     const requestInit: RequestInit = getRequestFormInit('POST', parameter);
-    const result: { headers: Headers, text: R } = await httpFetch<R>(url, requestInit);
+    const result: IFetchRes<R> = await httpFetch<R>(url, requestInit);
     return result;
   },
-  put: async <R>(url: string, parameter: { [key: string]: number | string }, headers?: { [key: string]: string | number }) => {
+  put: async <R>(url: string, parameter?: { [key: string]: number | string }, headers?: { [key: string]: string | number }) => {
     const requestInit: RequestInit = getRequestInit('PUT', headers, parameter);
-    const result: { headers: Headers, text: R } = await httpFetch<R>(url, requestInit);
+    const result: IFetchRes<R> = await httpFetch<R>(url, requestInit);
     return result;
   },
-  patch: async <R>(url: string, parameter: { [key: string]: number | string }, headers?: { [key: string]: string | number }) => {
+  patch: async <R>(url: string, parameter?: { [key: string]: number | string }, headers?: { [key: string]: string | number }) => {
     const requestInit: RequestInit = getRequestInit('PATCH', headers, parameter);
-    const result: { headers: Headers, text: R } = await httpFetch<R>(url, requestInit);
+    const result: IFetchRes<R> = await httpFetch<R>(url, requestInit);
     return result;
   },
   delete: async <R>(url: string, parameter?: { [key: string]: number | string }, headers?: { [key: string]: string | number }) => {
     const requestInit: RequestInit = getRequestInit('DELETE', headers, parameter);
-    const result: { headers: Headers, text: R } = await httpFetch<R>(url, requestInit);
+    const result: IFetchRes<R> = await httpFetch<R>(url, requestInit);
     return result;
   },
 };

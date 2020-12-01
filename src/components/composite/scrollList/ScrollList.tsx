@@ -60,7 +60,7 @@ const ScrollList = <T extends unknown>(props: IScrollListProps<T>) => {
           ]}
           extra={
             <img
-              width={272}
+              width={224}
               alt="logo"
               src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
             />

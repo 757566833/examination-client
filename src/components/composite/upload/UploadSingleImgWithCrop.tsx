@@ -3,12 +3,12 @@ import {Button, Upload, Modal, message} from 'antd';
 import ReactCrop, {Crop} from 'react-image-crop';
 
 import {RcFile} from 'antd/es/upload';
-import {downloadLocationBlob} from '@/util/download';
 import {UploadProps} from 'antd/lib/upload/interface';
 import {httpUrl} from '@/config/url';
 import {useLocalStorage} from '@/hooks/context';
 import {blob2File} from '@/util/file';
 import {formDataUpload} from '@/service/file';
+import {useLoadingWithFormData} from '@/hooks/common/loading';
 
 const getCroppedImg: (image: HTMLImageElement, crop: Required<Pick<Crop, 'width' | 'height' | 'x' | 'y'>>) => Promise<Blob> = (image, crop) => {
   if (!crop.width || !crop.height) {
@@ -74,7 +74,7 @@ const makeClientCrop = async (imageRef: HTMLImageElement | undefined, crop: Crop
       imageRef,
       requiredCrop,
   );
-  downloadLocationBlob(croppedImageUrl, 'test.jpg');
+  // downloadLocationBlob(croppedImageUrl, 'test.jpg');
   return croppedImageUrl;
 };
 
@@ -85,13 +85,14 @@ export interface IUploadSingleImgWithCrop {
 
 const UploadSingleImgWithCrop: React.FC<IUploadSingleImgWithCrop> = (props) => {
   const [token] = useLocalStorage('token');
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
+  const [uploadFetch, loading] = useLoadingWithFormData(formDataUpload);
   const imageRef = useRef<HTMLImageElement>();
   const [visible, setVisible] = useState(false);
   const [crop, setCrop] = useState<Crop>({
     unit: 'px',
-    width: 272,
-    height: 272,
+    width: 224,
+    height: 224,
     aspect: 1 / 1,
   });
   const [file, setFile] = useState<RcFile>();
@@ -113,11 +114,10 @@ const UploadSingleImgWithCrop: React.FC<IUploadSingleImgWithCrop> = (props) => {
     const uploadFile = blob2File(blob, suffix, file?.type);
     const formData = new FormData();
     formData.append('file', uploadFile);
-    formData.append('file', uploadFile);
-    setLoading(true);
-    const res = await formDataUpload(formData);
-    setLoading(false);
-    message.success('上传成功');
+    const res = await uploadFetch(formData);
+    props.onChange && props.onChange(res.data);
+    message.success(res.message);
+    setVisible(false);
   };
   const onCancel = () => {
     setVisible(false);

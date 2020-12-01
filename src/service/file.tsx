@@ -1,4 +1,4 @@
-import Http from '@/http';
+import Http, {IResponse} from '@/http';
 
 export const base64Upload = (base64: string) => {
   const url = '/file/upload/base64';
@@ -8,5 +8,5 @@ export const base64Upload = (base64: string) => {
 
 export const formDataUpload = (formData: FormData) => {
   const url = '/file/upload/form';
-  return Http.postForm(url, formData);
+  return Http.postForm<IResponse<string>>(url, formData);
 };
