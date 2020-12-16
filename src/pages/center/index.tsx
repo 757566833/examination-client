@@ -1,32 +1,28 @@
-import React from 'react';
-import ScrollList from '@/components/composite/scrollList/ScrollList';
-import UploadSingleImgWithCrop from '@/components/composite/upload/UploadSingleImgWithCrop';
+import React, {useState} from 'react';
+// import ScrollList from '@/components/composite/scrollList/ScrollList';
 import styles from './index.less';
-import {Button} from 'antd';
-import {getList} from '@/service/note';
-import {INote} from '@/service/note';
+import {Button, Avatar, Card, Typography} from 'antd';
+import {HighlightOutlined, SmileOutlined, SmileFilled} from '@ant-design/icons';
 import {useHistory} from 'react-router';
 import {useSocket} from '@/hooks/notHook/webSocket';
+import {useLoading} from '@/hooks/common/loading';
+import {getSelfInfo, IUserInfo} from '@/service/auth';
+import {useEffectOnce} from '@/hooks/common';
 
-
-const listData: any = [];
-for (let i = 0; i < 23; i++) {
-  listData.push({
-    href: 'https://ant.design',
-    title: `ant design part ${i}`,
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    description:
-      'Ant Design, a design language for background applications, is refined by Ant UED Team.',
-    content:
-      'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-  });
-}
 
 const Center: React.FC = () => {
   const his = useHistory();
   const goCreate = () => {
     his.push('/note/create');
   };
+  const [userInfo, setUserInfo] = useState<IUserInfo>({
+    account: '',
+    avatar: 'string',
+    github_url: 'string',
+    register_type: 1,
+    uid: -1,
+    username: '',
+  });
 
   const [socket] = useSocket();
   socket.on('connect', () => {
@@ -35,17 +31,34 @@ const Center: React.FC = () => {
   socket.on('login', (data: any) => {
     console.log('login' + data?.token);
   });
+  const [loadSelf, loading] = useLoading(getSelfInfo);
+  const getData = async () => {
+    const res = await loadSelf();
+    setUserInfo(res.data);
+  };
+  useEffectOnce(() => {
+    getData().then();
+  });
 
   return <div className={`${styles.center} flex`}>
 
     <div className={`${styles.body} flex`}>
       <div className={styles.list}>
-        <ScrollList<INote> getData={getList}/>
+        {/* <ScrollList<IText[]> getData={getList}/>*/}
       </div>
       <div className={styles.panel}>
-        <div><Button type="primary" onClick={goCreate}>写文章</Button></div>
+        <Card loading={loading}>
+          <Avatar size={64} src={userInfo.avatar}/>
+          <Typography.Paragraph>
+            {userInfo.username}
+          </Typography.Paragraph>
+          <Typography.Paragraph>
+            {userInfo.github_url}
+          </Typography.Paragraph>
+
+          <div><Button type="primary" onClick={goCreate}>写文章</Button></div>
+        </Card>
       </div>
-      <UploadSingleImgWithCrop/>
     </div>
   </div>;
 };

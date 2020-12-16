@@ -1,8 +1,8 @@
-import Http from '@/http';
+import Http, {IResponse} from '@/http';
 
-export const sendEmail = (email: string) => {
+export const sendEmail = (params: { email: string }) => {
   const url = '/mail/register';
-  return Http.post(url, {email});
+  return Http.post<IResponse<string>>(url, params);
 };
 
 

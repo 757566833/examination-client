@@ -7,6 +7,8 @@ import {sendEmail} from '@/service/mail';
 import {CountDown} from '@/components/custom/countDown/CountDown';
 import {register} from '@/service/auth';
 import {useLocalStorage} from '@/hooks/context';
+import {useLoading} from '@/hooks/common/loading';
+import {ERegisterType} from '@/enum/auth';
 
 const span0 = {
   span: 0,
@@ -17,28 +19,29 @@ const span24 = {
 
 const Register: React.FC<{ onSuccess: () => void }> = (props) => {
   const [isCountDown, setIsCountDown] = useState(false);
-  const [codeFetching, setCodeFetching] = useState(false);
-  const [registerFetching, setRegisterFetching] = useState(false);
+  // const [codeFetching, setCodeFetching] = useState(false);
   const [, setToken] = useLocalStorage('token');
   const [form] = Form.useForm();
+  const [loadRegister, loading] = useLoading(register);
   const onFinish = async (values: Store) => {
     console.log('Success:', values);
-    setRegisterFetching(true);
-    const res = await register(values.email, values.password, values.code, 2);
-    setRegisterFetching(false);
+    const res = await loadRegister({
+      email: values.email,
+      password: values.password,
+      code: values.code,
+      registerType: ERegisterType.register,
+    });
     if (res) {
       message.success('注册成功');
-      setToken(res.text.data.token);
+      setToken(res.data.token);
       props.onSuccess();
     }
   };
+  const [sendCode, codeFetching] = useLoading<string>(sendEmail);
   const getCode = async () => {
-    setCodeFetching(true);
-    const res = await sendEmail(form.getFieldValue('email'));
-    setCodeFetching(false);
-    if (res) {
-      setIsCountDown(true);
-    }
+    const res = await sendCode({email: form.getFieldValue('email')});
+    message.success(res.message);
+    setIsCountDown(true);
   };
   const countDownFinish = () => {
     setIsCountDown(false);
@@ -99,7 +102,7 @@ const Register: React.FC<{ onSuccess: () => void }> = (props) => {
         wrapperCol={span24}
         labelCol={span0}
       >
-        <Button loading={registerFetching} type="primary" className="max_width" htmlType="submit">
+        <Button loading={loading} type="primary" className="max_width" htmlType="submit">
           注册
         </Button>
       </Form.Item>

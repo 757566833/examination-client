@@ -1,41 +1,48 @@
 import Http, {IResponse} from '@/http';
 import {IList} from '@/service/interface';
 
-export interface INote {
-  id: number;
+export interface IText {
+  tid: number;
+  avatar: string;
+  username: string;
+  category: string;
   title: string;
   description: string;
   subTitle: string;
   text: string;
   tags: string[];
+  // eslint-disable-next-line camelcase
+  create_time: string
+  // eslint-disable-next-line camelcase
+  update_time: string
 }
 
 export const getList = (params: { page: number, size: number }) => {
-  const url = '/elastic/note/list';
-  return Http.get<IResponse<IList<INote>>>(url, params);
+  const url = '/note/text/list';
+  return Http.get<IResponse<IList<IText>>>(url, params);
 };
 
-export const add = (note: Pick<INote, 'title' | 'description' | 'subTitle' | 'text' | 'tags'>) => {
-  const url = '/elastic/note/list';
-  return Http.post<IResponse<{ nid: number }>>(url, note);
+export const addNote = (note: Pick<IText, 'title' | 'description' | 'subTitle' | 'text' | 'tags'>) => {
+  const url = '/note/text/create';
+  return Http.post<IResponse<{ tid: number }>>(url, note);
 };
 
-export const update = (id: number | string, note: Partial<INote>) => {
-  const url = `/elastic/note/update/${id}`;
+export const update = (id: number | string, note: Partial<IText>) => {
+  const url = `/note/text/update/${id}`;
   return Http.put<IResponse<{ nid: number }>>(url, note);
 };
 
-export const patch = (id: number | string, note: Partial<INote>) => {
-  const url = `/elastic/note/patch/${id}`;
+export const patch = (id: number | string, note: Partial<IText>) => {
+  const url = `/note/text/patch/${id}`;
   return Http.put<IResponse<{ nid: number }>>(url, note);
 };
 export const del = (id: string) => {
-  const url = `/elastic/note/delete/${id}`;
+  const url = `/note/text/delete/${id}`;
   return Http.delete<IResponse<{ nid: number }>>(url);
 };
-export const getById = (id: string) => {
-  const url = `/elastic/note/delete/${id}`;
-  return Http.get<IResponse<{ nid: number }>>(url);
+export const getNoteById = (id: string) => {
+  const url = `/note/text/get/${id}`;
+  return Http.get<IResponse<IText>>(url);
 };
 
 /**

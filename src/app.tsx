@@ -20,6 +20,8 @@ import Component2 from "@/pages/index";
 
 import Component3 from "@/pages/note/create/index";
 
+import Component4 from "@/pages/note/text/index";
+
 const AppRouter: React.FC = () => {
     return (
         <Context>
@@ -35,6 +37,8 @@ const AppRouter: React.FC = () => {
                       <Route path="/" exact={true} component={Component2} />
 
                       <Route path="/note/create" exact={true} component={Component3} />
+
+                      <Route path="/note/text" exact={true} component={Component4} />
 
                     </Switch>
                 </Layout>

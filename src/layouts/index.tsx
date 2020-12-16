@@ -5,12 +5,12 @@ import ErrorBoundary from './components/error/ErrorBoundary';
 
 const Layout: React.FC = (props) => {
   return (
-    <ErrorBoundary>
-      <div className={`${styles.layout} flex`}>
-        <Header/>
-        {props.children}
-      </div>
-    </ErrorBoundary>
+    // <ErrorBoundary>
+    <div className={`${styles.layout} flex`}>
+      <Header/>
+      {props.children}
+    </div>
+    // </ErrorBoundary>
   );
 };
 export default Layout;

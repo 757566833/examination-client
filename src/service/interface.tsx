@@ -1,6 +1,6 @@
 export interface IList<T> {
-  total: number,
-  list: T[],
+  count: number,
+  list: T,
   page: number,
-  size: number
+  pageSize: number
 }

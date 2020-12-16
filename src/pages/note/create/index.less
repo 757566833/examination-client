@@ -1,14 +1,35 @@
 .create {
   flex: 1;
   overflow: hidden;
+
   .input {
     height: 100%;
     overflow: auto;
   }
-  .markdown{
-    flex:1;
+
+  .markdown {
+    flex: 1;
     height: 100%;
     overflow: auto;
+  }
+
+  .textarea {
+    flex: 1;
+    outline: medium;
+    resize: none;
+    border: none;
+    width: 100%;
+    font-size: 38px;
+  }
+
+  .tags {
+    .input {
+      flex: 1;
+    }
+
+    .list {
+      flex: 1;
+    }
   }
 }
 

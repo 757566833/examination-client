@@ -5,7 +5,7 @@ import styles from './index.less';
 import Register from './components/register';
 import Login from './components/login';
 import {useLocalStorage} from '@/hooks/context';
-import {useHistory, Link} from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 import {useSocket} from '@/hooks/notHook/webSocket';
 import {clientId, returnUrl} from '@/config/oauth';
 
@@ -13,15 +13,25 @@ import {clientId, returnUrl} from '@/config/oauth';
 const UserCenter: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const [, , removeToken] = useLocalStorage('token');
+  const [role, , removeRole] = useLocalStorage('role');
   const his = useHistory();
   const goCenter = () => {
     his.push('/center');
   };
+  const goAdmin = () => {
+    his.push('/admin');
+  };
   const logout = () => {
     removeToken();
+    removeRole();
     his.push('/');
   };
   const menu = (<Menu>
+    {role == 'ADMIN' && <Menu.Item key="1">
+      <Button type="link" size='small' onClick={goAdmin}>
+        管理
+      </Button>
+    </Menu.Item>}
     <Menu.Item>
       <Button type="link" size='small' onClick={goCenter}>
         个人中心
@@ -33,6 +43,9 @@ const UserCenter: React.FC = () => {
       </Button>
     </Menu.Item>
   </Menu>);
+  // if (role=='ROLE_ADMIN') {
+  //   menu
+  // }
   const onCancel = () => {
     setVisible(false);
   };
@@ -70,14 +83,11 @@ const UserCenter: React.FC = () => {
         <Tabs.TabPane tab="登陆" key="login">
           <div className={`${styles.login}`}>
             <Login onSuccess={onCancel}/>
-
             <Space
               className={`max_width ${styles.oauth2_icons}`}
               align="baseline"
             >
-
               <GithubLogin close={onOk}/>
-
             </Space>
             <div className="height_24"/>
           </div>
@@ -107,6 +117,7 @@ const GithubLogin: React.FC<{ close: () => void }> = (props) => {
   const {close} = props;
   const [socket] = useSocket();
   const [, setToken] = useLocalStorage('token');
+  const [, setRole] = useLocalStorage('role');
   const githubLogin = () => {
     openWindow(`https://github.com/login/oauth/authorize?client_id=${clientId}&scope=read:user user:email&redirect_uri=${returnUrl}?socketId=${socket.id}`, 600, 800, '登陆');
   };
@@ -114,13 +125,15 @@ const GithubLogin: React.FC<{ close: () => void }> = (props) => {
     // socket.offAny();
     socket.on('login', (data: any) => {
       console.log('接收到了token:' + data.token);
+      console.log('接收到了role:' + data.role);
       setToken(data.token);
+      setRole(data.role);
       close();
     });
     return () => {
       socket.off('login');
     };
-  }, [close, setToken, socket]);
+  }, [close, setRole, setToken, socket]);
 
 
   return <Tooltip title="github登陆">
